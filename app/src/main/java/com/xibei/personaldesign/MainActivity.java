@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.xibei.personaldesign.itemDemo.ActivityAnimation1;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv_title = findViewById(R.id.lv_title);
+
+
         beans = new ArrayList<>();
-        addData(new ActivityAnimation1(),"动画一");
+        addData(new ActivityAnimation1(),"动画一 : scale、rotate、translate、alpha、set");
+        addData(new ActivityAnimation2(),"动画二 : 动画一 + interpolater 效果");
+
+
         adapter = new DesignAdapter(beans,this);
         lv_title.setAdapter(adapter);
+
         lv_title.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -37,16 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void addData(Activity activity,String title) {
-
         ItemBean bean = new ItemBean();
-
         bean.activity = activity;
-
         bean.title = title;
-
         beans.add(bean);
-
     }
 
 
