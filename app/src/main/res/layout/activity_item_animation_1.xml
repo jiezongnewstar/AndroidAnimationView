@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/animation1_view"
+        android:layout_centerInParent="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@android:color/black"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_animation_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第一个动画"/>
+
+            <Button
+                android:id="@+id/btn_animation_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第二个动画"/>
+
+            <Button
+                android:id="@+id/btn_animation_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第三个动画"/>
+            <Button
+                android:id="@+id/btn_animation_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第四个动画"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_animation_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第五个动画"/>
+
+            <Button
+                android:id="@+id/btn_animation_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第六个动画"/>
+
+            <Button
+                android:id="@+id/btn_animation_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第七个动画"/>
+            <Button
+                android:id="@+id/btn_animation_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第八个动画"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

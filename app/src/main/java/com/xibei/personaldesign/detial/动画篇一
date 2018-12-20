@@ -1,0 +1,41 @@
+Android 的 animation由四种类型组成： alpha 、scale 、translate、rotate
+
+alpha: 渐变透明度动画效果
+scale：渐变尺寸伸缩动画效果
+translate：画面转换位置移动动画效果
+rotate：画面转移旋转动画效果
+
+---------------------------------------------------------
+
+scale 标签 ————调节尺寸
+1、自有属性
+scale标签是缩放动画，可以实现动态调整控件尺寸的效果，有下面几个属性：
+
+•android：fromXScale 起始的X方向相对自身的缩放比例，浮点值，比如0.1代表自身无变化，0.5代表起始时缩小一倍，2.0代表放大一倍；
+•android：toXScale  结尾的X方向上相对自身的缩放比例，浮点值
+•android：fromYScale 起始的Y方向相对自身的缩放比例，浮点值
+•android：toYScale 结尾的Y方向相对自身的缩放比例，浮点值
+•android：pivotX 缩放起点X轴坐标，可以是数值、百分数、百分数P三种样式，比如50、50%、50%p，当为数值时，表示在当前
+                 View的左上角，左上角加上父控件宽度的50%作为起点X轴坐标
+•android：pivotY 缩放起点Y轴坐标，取值同pivotX相同
+
+2、从Animation类继承的属性
+Animation类是所有动画（scale、alpha、translate、rotate）的积累，这里以scale标签为例，讲解一下，Animation类所有的属性及意义。
+
+·android：duration  动画持续时间，以毫秒为单位
+·android：fillAfter 如果设置为true，控件动画结束时，将保持动画最后的状态
+·android：fillBefore 如果设置为ture，控件动画结束时，还原到开始动画前的状态
+·android：fillEnable 与android;fillBefore效果相同，都是在动画结束时，将控件还原到初始状态
+·android：repeatCount 重复次数
+·android：repeatMode 重复类型，有reverse和restart两个值，reserve表示倒序回放，restart表示重新放一遍，必须与repeatCount一起使用
+                    才能看到效果，因为这里的意义是重复的类型，即回放时的动作
+·android：interpolator设定插值器，其实就是指定的动作效果，比如弹跳效果
+
+
+alpha  标签 ————调节透明度
+1、自身属性
+·android：fromAlpha 动画开始的透明度 从0.0——1.0， 0.0表示全透明，1.0表示完全不透明
+·android：toAlpha  动画结束时的透明度，也是从0.0 ——1.0 ， 0.0表示全透明，1.0表示完全不透明
+
+
+
