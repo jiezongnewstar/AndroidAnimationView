@@ -7,8 +7,8 @@
     <View
         android:id="@+id/animation1_view"
         android:layout_centerInParent="true"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@android:color/black"/>
 
 
@@ -16,10 +16,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -49,7 +50,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -75,6 +76,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="第八个动画"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_animation_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第九个动画"/>
+
+            <Button
+                android:id="@+id/btn_animation_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第十个动画"/>
+
 
         </LinearLayout>
 

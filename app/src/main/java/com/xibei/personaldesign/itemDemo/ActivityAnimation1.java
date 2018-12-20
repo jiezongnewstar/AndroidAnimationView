@@ -11,7 +11,8 @@ import com.xibei.personaldesign.R;
 
 public class ActivityAnimation1 extends Activity implements View.OnClickListener {
 
-    Button btn_animation_1, btn_animation_2, btn_animation_3, btn_animation_4, btn_animation_5, btn_animation_6;
+    Button btn_animation_1, btn_animation_2, btn_animation_3, btn_animation_4, btn_animation_5, btn_animation_6,
+            btn_animation_7, btn_animation_8, btn_animation_9, btn_animation_10;
 
     View animation1_view;
 
@@ -21,6 +22,10 @@ public class ActivityAnimation1 extends Activity implements View.OnClickListener
     Animation animation_4;
     Animation animation_5;
     Animation animation_6;
+    Animation animation_7;
+    Animation animation_8;
+    Animation animation_9;
+    Animation animation_10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +37,20 @@ public class ActivityAnimation1 extends Activity implements View.OnClickListener
         btn_animation_4 = findViewById(R.id.btn_animation_4);
         btn_animation_5 = findViewById(R.id.btn_animation_5);
         btn_animation_6 = findViewById(R.id.btn_animation_6);
+        btn_animation_7 = findViewById(R.id.btn_animation_7);
+        btn_animation_8 = findViewById(R.id.btn_animation_8);
+        btn_animation_9 = findViewById(R.id.btn_animation_9);
+        btn_animation_10 = findViewById(R.id.btn_animation_10);
         btn_animation_1.setOnClickListener(this);
         btn_animation_2.setOnClickListener(this);
         btn_animation_3.setOnClickListener(this);
         btn_animation_4.setOnClickListener(this);
         btn_animation_5.setOnClickListener(this);
         btn_animation_6.setOnClickListener(this);
+        btn_animation_7.setOnClickListener(this);
+        btn_animation_8.setOnClickListener(this);
+        btn_animation_9.setOnClickListener(this);
+        btn_animation_10.setOnClickListener(this);
         animation1_view = findViewById(R.id.animation1_view);
 
 
@@ -69,6 +82,22 @@ public class ActivityAnimation1 extends Activity implements View.OnClickListener
             case R.id.btn_animation_6:
                 animation_6 = AnimationUtils.loadAnimation(this, R.anim.animation_1_6);
                 animation1_view.startAnimation(animation_6);
+                break;
+            case R.id.btn_animation_7:
+                animation_7 = AnimationUtils.loadAnimation(this, R.anim.animation_1_7);
+                animation1_view.startAnimation(animation_7);
+                break;
+            case R.id.btn_animation_8:
+                animation_8 = AnimationUtils.loadAnimation(this, R.anim.animation_1_8);
+                animation1_view.startAnimation(animation_8);
+                break;
+            case R.id.btn_animation_9:
+                animation_9 = AnimationUtils.loadAnimation(this, R.anim.animation_1_9);
+                animation1_view.startAnimation(animation_9);
+                break;
+                case R.id.btn_animation_10:
+                animation_10 = AnimationUtils.loadAnimation(this, R.anim.animation_1_10);
+                animation1_view.startAnimation(animation_10);
                 break;
         }
     }

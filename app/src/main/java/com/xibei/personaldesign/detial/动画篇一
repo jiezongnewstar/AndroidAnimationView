@@ -8,34 +8,102 @@ rotate：画面转移旋转动画效果
 ---------------------------------------------------------
 
 scale 标签 ————调节尺寸
+
 1、自有属性
+
 scale标签是缩放动画，可以实现动态调整控件尺寸的效果，有下面几个属性：
 
-•android：fromXScale 起始的X方向相对自身的缩放比例，浮点值，比如0.1代表自身无变化，0.5代表起始时缩小一倍，2.0代表放大一倍；
-•android：toXScale  结尾的X方向上相对自身的缩放比例，浮点值
-•android：fromYScale 起始的Y方向相对自身的缩放比例，浮点值
-•android：toYScale 结尾的Y方向相对自身的缩放比例，浮点值
-•android：pivotX 缩放起点X轴坐标，可以是数值、百分数、百分数P三种样式，比如50、50%、50%p，当为数值时，表示在当前
-                 View的左上角，左上角加上父控件宽度的50%作为起点X轴坐标
-•android：pivotY 缩放起点Y轴坐标，取值同pivotX相同
+•android：fromXScale     起始的X方向相对自身的缩放比例，浮点值，比如0.1代表自身无变化，0.5代表起始时缩小一倍，2.0代表放大一倍；
+•android：toXScale       结尾的X方向上相对自身的缩放比例，浮点值
+•android：fromYScale     起始的Y方向相对自身的缩放比例，浮点值
+•android：toYScale       结尾的Y方向相对自身的缩放比例，浮点值
+•android：pivotX         缩放起点X轴坐标，可以是数值、百分数、百分数P三种样式，比如50、50%、50%p，当为数值时，表示在当前
+                         View的左上角，左上角加上父控件宽度的50%作为起点X轴坐标
+•android：pivotY         缩放起点Y轴坐标，取值同pivotX相同
 
 2、从Animation类继承的属性
+
 Animation类是所有动画（scale、alpha、translate、rotate）的积累，这里以scale标签为例，讲解一下，Animation类所有的属性及意义。
 
-·android：duration  动画持续时间，以毫秒为单位
-·android：fillAfter 如果设置为true，控件动画结束时，将保持动画最后的状态
-·android：fillBefore 如果设置为ture，控件动画结束时，还原到开始动画前的状态
-·android：fillEnable 与android;fillBefore效果相同，都是在动画结束时，将控件还原到初始状态
-·android：repeatCount 重复次数
-·android：repeatMode 重复类型，有reverse和restart两个值，reserve表示倒序回放，restart表示重新放一遍，必须与repeatCount一起使用
-                    才能看到效果，因为这里的意义是重复的类型，即回放时的动作
-·android：interpolator设定插值器，其实就是指定的动作效果，比如弹跳效果
+·android：duration     动画持续时间，以毫秒为单位
+·android：fillAfter    如果设置为true，控件动画结束时，将保持动画最后的状态
+·android：fillBefore   如果设置为ture，控件动画结束时，还原到开始动画前的状态
+·android：fillEnable   与android;fillBefore效果相同，都是在动画结束时，将控件还原到初始状态
+·android：repeatCount  重复次数
+·android：repeatMode   重复类型，有reverse和restart两个值，reserve表示倒序回放，restart表示重新放一遍，必须与repeatCount一起使用
+                       才能看到效果，因为这里的意义是重复的类型，即回放时的动作
+·android：interpolator 设定插值器，其实就是指定的动作效果，比如弹跳效果
 
 
 alpha  标签 ————调节透明度
+
 1、自身属性
-·android：fromAlpha 动画开始的透明度 从0.0——1.0， 0.0表示全透明，1.0表示完全不透明
-·android：toAlpha  动画结束时的透明度，也是从0.0 ——1.0 ， 0.0表示全透明，1.0表示完全不透明
+·android：fromAlpha     动画开始的透明度 从0.0——1.0， 0.0表示全透明，1.0表示完全不透明
+·android：toAlpha       动画结束时的透明度，也是从0.0 ——1.0 ， 0.0表示全透明，1.0表示完全不透明
+
+2、从Animation类继承的属性
+
+·android：duration      动画持续时间，以毫秒为单位
+·android：fillAfter     如果设置为true，控件动画结束时，将保持动画最后的状态
+·android：fillBefore    如果设置为ture，控件动画结束时，还原到开始动画前的状态
+·android：fillEnable    与android;fillBefore效果相同，都是在动画结束时，将控件还原到初始状态
+·android：repeatCount   重复次数
+·android：repeatMode    重复类型，有reverse和restart两个值，reserve表示倒序回放，restart表示重新放一遍，必须与repeatCount一起使用
+                        才能看到效果，因为这里的意义是重复的类型，即回放时的动作
+·android：interpolator  设定插值器，其实就是指定的动作效果，比如弹跳效果
 
 
+rotate 标签————旋转
+1、自身属性
+·android：fromeDegrees  开始旋转的角度位置，正值代表顺时针方向度数，负值代表逆时针方向度数
+·android：toDegrees     结束时旋转到的角度位置，正值代表顺时针方向的度数，负值代表逆时针的方向度数
+·android:pivotX         缩放起点X轴坐标，可以是数值、百分数、百分数p 三种样式，比如 50、50%、50%p，具体意义已在scale标签中讲述，这里就不再重讲
+·android:pivotY         缩放起点Y轴坐标，可以是数值、百分数、百分数p 三种样式，比如 50、50%、50%p
+
+2、从Animation继承  同上
+
+
+translate 标签 ————平移
+·android:fromXDelta       起始点X轴坐标，可以是数值、百分数、百分数p 三种样式，比如 50、50%、50%p，具体意义已在scale标签中讲述，这里就不再重讲
+·android:fromYDelta       起始点Y轴从标，可以是数值、百分数、百分数p 三种样式；
+·android:toXDelta         结束点X轴坐标
+·android:toYDelta         结束点Y轴坐标
+
+2、从Animation继承  同上
+
+
+set 标签 ———— 定义动作集合
+
+前面讲解了各个标签动画的意义及用法，但他们都是独立控件起作用，假设我现在想上面的textview控件做一个动作————从小到大，旋转出场，而且透明度也要从0变成1
+
+属性：
+    set标签自己是没有属性的，他的属性都是从Aniamtion继承而来的，但是他们用于set标签时，就会对set标签下的所有子控件都产生作用
+
+    从Animation继承的属性  同上
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="3000"
+    android:fillAfter="true">
+
+  <alpha
+    android:fromAlpha="0.0"
+    android:toAlpha="1.0"/>
+
+  <scale
+    android:fromXScale="0.0"
+    android:toXScale="1.4"
+    android:fromYScale="0.0"
+    android:toYScale="1.4"
+    android:pivotX="50%"
+    android:pivotY="50%"/>
+
+  <rotate
+    android:fromDegrees="0"
+    android:toDegrees="720"
+    android:pivotX="50%"
+    android:pivotY="50%"/>
 
