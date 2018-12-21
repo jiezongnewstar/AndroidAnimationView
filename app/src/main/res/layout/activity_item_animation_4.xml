@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请先点击viewanimation查看结果后再点击value animator"/>
+
+    <View
+        android:id="@+id/animation4_view"
+        android:layout_centerInParent="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@android:color/black"/>
+
+
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <Button
+            android:id="@+id/btn_view_anmation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Animation"/>
+
+
+        <Button
+            android:id="@+id/btn_value_animator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value Animator"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

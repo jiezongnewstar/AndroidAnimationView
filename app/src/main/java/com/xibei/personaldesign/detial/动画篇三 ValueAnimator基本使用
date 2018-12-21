@@ -1,0 +1,50 @@
+传统的alpha、scale、translate、rotate的用法及代码生成方法都属于 Tween Animation 也就是补间动画
+在android动画中，总共有两种类型的动画View Animation（视图动画）和Property Animation（属性动画）
+
+其中
+
+    View Animation 包括Tween Animation（补间动画）和Frame Animation（逐帧动画）
+    Property Animator 包括ValueAnimator 和ObjectAnimation
+
+首先，直观上，他们有如下三点不同
+
+1、引入时间不同
+    View Animation 是API Level 1 就引入的。Property Animator 是API level 11 引入的，即Android3.0才开始有Property Animator 相关的API
+2、所在包名不同
+    View Animation 在包andorid.view.animation 而Property Animator API 在包android.animation中。
+3、动画类的命名不懂：View Animation中动画类取名豆角XXXXAnimation，而在Property Animator中动画类的取名则叫XXXXanimator
+
+
+大家都该知道助阵动画主要是用来实现动画的，而补间动画才能实现控件的渐入渐出、移动、旋转和缩放，而Property Aniamtor是在Android3.0
+版本才引入的，之前是没有的。大家可能会觉得补间动画和逐帧动画已经很全面了，为什么还要引入Property animtor呢？
+
+-----为什么要引入Proterty Animator（属性动画）--------
+我提出一个假设：请问大家，如何利用补间动画来将一个控件的背景在一分钟内从绿色变为红色？这个效果想必是没有办法仅仅通过改变控件的渐入渐出、移动、
+旋转和缩放来实现吧，尔这个效果是可以通过Property Animator 完美实现的
+这就是第一个原因： Property Animator 能实现补间动画无法实现的功能
+大家都知道，补间动画和逐帧动画统称为View animation，也就是说这两个动画只能派生自View的控件实例起作用，而Pproterty Animator则不同，从名字中可以看出
+属性动画应该是作用于控件属性的，正因为属性动画能够只针对控件的某一个属性来做动画，所以也就造就了他能单独改变
+控件的某一个属性的值，比如颜色，这就是Property Animator 能够实现补间动画无法实现的动能的最重要原因
+
+我们得到了第二点不同：
+    View Animation 仅能对指定的控件做动画，而Property Animator 是通过改变控件某一属性值来做动画。
+假设我们将一个按钮从左上角利用补间动画将其移动到右下角，在移动过程中和移动中和移动后，这个按钮都不会响应点击
+时间的。这是为什么，因为补间动画仅仅转变的是控件的现实位置而已，并没有改变控件本身的值。View Animation的动画实现
+是通过其Parent View 实现的，在View被draw时Parents View 改变他的绘制参数，这样虽然View的大小或旋转角度等改变了，
+但View的实际属性没改变，所以有效区域还是应用动画之前的区域，我们看到的效果仅仅是系统作用在按钮身上的现实效果，
+利用动画把按钮从原来的位置移到了右下角，但按钮内部的任何值是没有变化的，所以按钮索捕捉的点击区域仍然是原来的点击区域
+
+这就得到了第三点不用：
+补间动画虽然能对控件做动画，但并没有改变控件内部的属性值。而Property Animator则是恰恰相反，Property Animator
+则是恰恰相反，Property Animator 是通过改变控件内部的属性值达到动画效果的
+
+
+-------------ValueAnimator简单使用-------------------------
+
+我们前面讲了Property Animator包括ValueAnimator和ObjectAnimator；这篇文章就主要来看看ValueAnimator的使用方法吧。
+我觉得谷歌那帮老头是最会起名字的人，单从命名上，就能看出来这个东东的含义。ValueAnimator从名字可以看出，这个Animation是针对值的！ValueAnimator不会对控件做任何操作，我们可以给它设定从哪个值运动到哪个值，通过监听这些值的渐变过程来自己操作控件。以前我们曾讲过Scroller类，Scroller类也是不会对控件操作的，也是通过给他设定滚动值和时长，它会自己计算滚动过程，然后我们需要监听它的动画过程来自己操作控件，ValueAnimator的原理与Scroller类相似。
+
+对比实例请参考动画四。
+
+常用用法
+1、ofInt与ofFloat

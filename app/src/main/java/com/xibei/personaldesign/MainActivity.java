@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation1;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation2;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation3;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation4;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lv_title = findViewById(R.id.lv_title);
 
-
-        beans = new ArrayList<>();
-        addData(new ActivityAnimation1(),"动画一 : scale、rotate、translate、alpha、set");
-        addData(new ActivityAnimation2(),"动画二 : 动画一 + interpolater 效果");
-        addData(new ActivityAnimation3(),"动画三 : 代码实现动画效果");
-
+        iniaData();
 
         adapter = new DesignAdapter(beans,this);
         lv_title.setAdapter(adapter);
@@ -43,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,beans.get(position).activity.getClass()));
             }
         });
+
+    }
+
+    private void iniaData() {
+        beans = new ArrayList<>();
+        addData(new ActivityAnimation1(),"动画一 : scale、rotate、translate、alpha、set");
+        addData(new ActivityAnimation2(),"动画二 : 动画一 + interpolater 效果");
+        addData(new ActivityAnimation3(),"动画三 : 代码实现动画效果");
+        addData(new ActivityAnimation4(),"动画四 ：View Anmation 和 Value Animator的对比");
 
     }
 
