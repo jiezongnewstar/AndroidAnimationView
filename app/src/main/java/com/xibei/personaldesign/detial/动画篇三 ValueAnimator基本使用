@@ -48,3 +48,129 @@
 
 常用用法
 1、ofInt与ofFloat
+在上面的例子中，我们使用了ofInt函数，与它同样功能的还有一个函数叫ofFloat,下面我们先看看他们的具体声明：
+public static ValueAnimator ofInt(int... values)
+public static ValueAnimator ofFloat(float... values)
+他们的参数类型都是可变参数长参数，所以我们可以传入任何数量的值；传进去的值列表，就表示动画时的变化范围；比如ofInt(2,90,45)就表示从数值2变化到数字90再变化到数字45；所以我们传进去的数字越多，动画变化就越复杂。从参数类型也可以看出ofInt与ofFloat的唯一区别就是传入的数字类型不一样，ofInt需要传入Int类型的参数，而ofFloat则表示需要传入Float类型的参数。
+下面我们还在上面例子的基础上，使用ofFloat函数来举个例子：
+
+Float curValueFloat = (Float)animation.getAnimatedValue();
+通过getAnimatedValue()来获取当前运动点的值，大家可能会疑问为什么要转成Float类型，我们先来看看getAnimatedValue()的声明：
+Object getAnimatedValue();
+它返回的类型是一个Object原始类型，那我们怎么知道我们要将它强转成什么类型呢。注意，我们在设定动画初始值时用的是ofFloat()函数，所以每个值的类型必定是Float类型，所以我们获取出来的类型也必然是Float类型的。同样，如果我们使用ofInt设定的初始值，那么通过getAnimatedValue()获取到的值就应该强转为Int类型。
+在得到当前运动的值以后，通过layout函数将textview移动到指定位置即可。
+
+--------------------- --------------------------------------------------------------
+
+2、常用函数
+先做个汇总，这部分将讲述的方法有：
+/**
+ * 设置动画时长，单位是毫秒
+ */
+ValueAnimator setDuration(long duration)
+/**
+ * 获取ValueAnimator在运动时，当前运动点的值
+ */
+Object getAnimatedValue();
+/**
+ * 开始动画
+ */
+void start()
+/**
+ * 设置循环次数,设置为INFINITE表示无限循环
+ */
+void setRepeatCount(int value)
+/**
+ * 设置循环模式
+ * value取值有RESTART，REVERSE，
+ */
+void setRepeatMode(int value)
+/**
+ * 取消动画
+ */
+void cancel()
+
+1、setDuration()、getAnimatedValue()、start()
+
+这三个函数在上面的实例中已经使用过，setDuration(long duration)是设置一次动画的时长，单位是毫秒，
+start()是开始动画，唯一有点难度的是Object getAnimatedValue()，它的声明为：
+Object getAnimatedValue();
+它的意义就是获取动画在当前运动点的值，所以这个对象只能用于在动画运动中。返回的值是Object,上面我们说过，通过getAnimatedValue()得到的值的实际类型与初始设置的值相同，如果我们利用ofInt（）设置的动画，那通过getAnimatedValue()得到的值为类型就是Int类型。如果我们利用ofFloat（）设置的动画，通过getAnimatedValue()得到的值类型就是Float类型。
+总而言之，通过getAnimatedValue()值类型与初始设置动画时的值类型相同
+
+
+2、setRepeatCount()、setRepeatMode()、cancel（）
+setRepeatCount(int value)用于设置动画循环次数,设置为0表示不循环，设置为ValueAnimation.INFINITE表示无限循环。
+cancel()用于取消动画
+我们着重说一下setRepeatMode：
+
+/**
+ * 设置循环模式
+ * value取值有RESTART，REVERSE
+ */
+
+void setRepeatMode(int value)
+setRepeatMode(int value)用于设置循环模式，取值为ValueAnimation.RESTART时,表示正序重新开始，
+当取值为ValueAnimation.REVERSE表示倒序重新开始。
+
+
+3、两个监听器
+
+（1）添加监听器
+前面，我们讲过一个添加监听器animator.addUpdateListener，以监听动画过程中值的实时变化，其实在ValueAnimator中共有两个监听器：
+
+/**
+ * 监听器一：监听动画变化时的实时值
+ */
+public static interface AnimatorUpdateListener {
+    void onAnimationUpdate(ValueAnimator animation);
+}
+//添加方法为：public void addUpdateListener(AnimatorUpdateListener listener)
+/**
+ * 监听器二：监听动画变化时四个状态
+ */
+public static interface AnimatorListener {
+    void onAnimationStart(Animator animation);
+    void onAnimationEnd(Animator animation);
+    void onAnimationCancel(Animator animation);
+    void onAnimationRepeat(Animator animation);
+}
+//添加方法为：public void addListener(AnimatorListener listener)
+
+关于监听器一：AnimatorUpdateListener就是监听动画的实时变化状态，在onAnimationUpdate(ValueAnimator animation)中的animation表示当前状态动画的实例。这里就不再细讲这个监听器了，这里我们主要讲讲监听器AnimatorListener；
+在AnimatorListener中，主要是监听Animation的四个状态，start、end、cancel、repeat；当动画开始时，会调用onAnimationStart(Animator animation)方法，当动画结束时调用onAnimationEnd(Animator animation)，当动画取消时，调用onAnimationCancel(Animator animation)函数，当动画重复时，会调用onAnimationRepeat(Animator animation)函数。
+添加AnimatorListener的方法是addListener(AnimatorListener listener) ；
+
+（2）取消监听
+上面我们讲了如何添加监听函数，下面我们来看看如何移除监听器：
+/**
+ * 移除AnimatorUpdateListener
+ */
+void removeUpdateListener(AnimatorUpdateListener listener);
+void removeAllUpdateListeners();
+ /**
+  * 移除AnimatorListener
+  */
+void removeListener(AnimatorListener listener);
+void removeAllListeners();
+
+针对AnimatorUpdateListener和AnimatorListener，每个监听器都有两个方法来移除；我们就以移除AnimatorListener来简单讲一下，
+removeListener(AnimatorListener listener)用于在animator中移除指定的监听器，而removeAllListeners()用于移除animator中所有的AnimatorListener监听器；
+
+4、其他函数
+上面我们讲了ValueAnimator中常用的一些函数，但是还有一些函数虽然不常用，但我们还是简单讲一下，他们分别是：
+/**
+ * 延时多久时间开始，单位是毫秒
+ */
+public void setStartDelay(long startDelay)
+/**
+ * 完全克隆一个ValueAnimator实例，包括它所有的设置以及所有对监听器代码的处理
+ */
+public ValueAnimator clone()
+
+
+
+
+
+
+

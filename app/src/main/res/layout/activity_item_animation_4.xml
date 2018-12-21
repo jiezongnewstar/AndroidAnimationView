@@ -8,7 +8,7 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="请先点击viewanimation查看结果后再点击value animator"/>
+        android:text="请先点击value animator查看结果后再点击viewanimation查看另一种结果"/>
 
     <View
         android:id="@+id/animation4_view"
@@ -19,25 +19,54 @@
 
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:gravity="center_horizontal">
 
+        <LinearLayout
 
-        <Button
-            android:id="@+id/btn_view_anmation"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="View Animation"/>
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AnimatorReapet"/>
 
 
-        <Button
-            android:id="@+id/btn_value_animator"
+            <Button
+                android:id="@+id/btn_cancle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AnimatorCancle "/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Value Animator"/>
+            android:layout_height="wrap_content">
 
+            <Button
+                android:id="@+id/btn_view_anmation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Animation"/>
+
+
+            <Button
+                android:id="@+id/btn_value_animator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Value Animator"/>
+
+
+        </LinearLayout>
 
     </LinearLayout>
 
