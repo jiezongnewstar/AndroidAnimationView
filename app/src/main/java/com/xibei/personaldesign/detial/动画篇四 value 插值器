@@ -1,0 +1,145 @@
+一、插值器
+
+插值器，也叫加速器；我们知道，我们通过ofInt(0,400)定义了动画的区间值是0到400；然后通过添加AnimatorUpdateListener来监听动画的实时变化。那么问题来了，0-400的值是怎么变化的呢？像我们骑自行车，还有的快有的慢呢；这个值是匀速变化的吗？如果是，那我如果想让它先加速再减速的变化该怎么办？
+          这就是插值器的作用！插值器就是用来控制动画区间的值被如何计算出来的。比如LinearInterpolator插值器就是匀速返回区间点的值；而DecelerateInterpolator则表示开始变化快，后期变化慢；其它都类似，下面我们就看看ValueAnimator中插值器的应用方法，然后通过自定义一个插值器来看看插值器到底是什么。
+
+
+1、使用插值器
+ValueAnimator animator = ValueAnimator.ofInt(0,600);
+
+animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        int curValue = (int)animation.getAnimatedValue();
+        tv.layout(tv.getLeft(),curValue,tv.getRight(),curValue+tv.getHeight());
+    }
+});
+animator.setDuration(1000);
+animator.setInterpolator(new BounceInterpolator());
+animator.start();
+在监听中，我们只改变textview的top和bottom的位置，让它跟着当前动画的值来改变它当前的top和bottom的位置。然后我们利用setDuration(1000)给它设置上做一次动画所需要的时长，然后通过setInterpolator（）给它设置插值器，也就是过渡值变化的规则；
+从效果图中也可以看出，插值器的意义其实就相当于物理公式中的加速度参数，所以这也就是它也叫加速器的原因。
+
+
+2、自定义插值器
+1、概述
+在这段，我们就开始着手自己写一个加速器了，在写加速器之前，先看看人家的加速器是怎么写的吧。
+先看看LinearInterpolator：
+
+public class LinearInterpolator implements Interpolator {
+
+    public LinearInterpolator() {
+    }
+
+    public LinearInterpolator(Context context, AttributeSet attrs) {
+    }
+
+    public float getInterpolation(float input) {
+        return input;
+    }
+}
+public interface Interpolator extends TimeInterpolator {
+}
+
+LinearInterpolator实现了Interpolator接口；而Interpolator接口则直接继承自TimeInterpolator，而且并没有添加任何其它的方法。
+那我们来看看TimeInterpolator接口都有哪些函数吧：
+/**
+ * A time interpolator defines the rate of change of an animation. This allows animations
+ * to have non-linear motion, such as acceleration and deceleration.
+ */
+public interface TimeInterpolator {
+
+    /**
+     * Maps a value representing the elapsed fraction of an animation to a value that represents
+     * the interpolated fraction. This interpolated value is then multiplied by the change in
+     * value of an animation to derive the animated value at the current elapsed animation time.
+     *
+     * @param input A value between 0 and 1.0 indicating our current point
+     *        in the animation where 0 represents the start and 1.0 represents
+     *        the end
+     * @return The interpolation value. This value can be more than 1.0 for
+     *         interpolators which overshoot their targets, or less than 0 for
+     *         interpolators that undershoot their targets.
+     */
+    float getInterpolation(float input);
+}
+
+这里是TimeInterpolator的代码，它里面只有一个函数float getInterpolation(float input);我们来讲讲这个函数是干什么的。
+参数input:input参数是一个float类型，它取值范围是0到1，表示当前动画的进度，取0时表示动画刚开始，取1时表示动画结束，取0.5时表示动画中间的位置，其它类推。
+返回值：表示当前实际想要显示的进度。取值可以超过1也可以小于0，超过1表示已经超过目标值，小于0表示小于开始位置。
+对于input参数，它表示的是当前动画的进度，匀速增加的。什么叫动画的进度，动画的进度就是动画在时间上的进度，与我们的任何设置无关，随着时间的增长，动画的进度自然的增加，从0到1；input参数相当于时间的概念，我们通过setDuration()指定了动画的时长，在这个时间范围内，动画进度肯定是一点点增加的；就相当于我们播放一首歌，这首歌的进度是从0到1是一样的。
+而返回值则表示动画的数值进度，它的对应的数值范围是我们通过ofInt(),ofFloat()来指定的，这个返回值就表示当前时间所对应的数值的进度。
+我们先看看下面这段代码：
+
+ValueAnimator anim = ValueAnimator.ofInt(100, 400);
+anim.setDuration(1000);
+anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        float currentValue = (float) animation.getAnimatedValue();
+        Log.d("TAG", "cuurent value is " + currentValue);
+    }
+});
+anim.start();
+
+我们知道，在我们添加了AnimatorUpdateListener的监听以后，通过在监听函数中调用 animation.getAnimatedValue()就可以得到当前的值；
+那当前的值是怎么来的呢？见下面的计算公式：（目前这么理解，后面会细讲真实情况）
+当前的值 = 100 + （400 - 100）* 显示进度
+其中100和400就是我们设置的ofInt(100,400)中的值，这个公式应该是比较容易理解的，就相当于我们做一个应用题：
+小明从100的位置开始出发向400的位置开始跑去，在走到全程距离20%位置时，请问小明在哪个数字点上？
+当前的值 = 100 + （400 -100）* 0.2；
+很简单的应用题，ofInt()中AnimatorUpdateListener中的当前值就是这么来的。从这里大家可以看到，显示进度就表示的是当前的值的位置。但由于我们可以通过指定getInterpolation()的返回值来指定当前的显示值的进度，所以随着时间的增加，我们可以让值随意在我们想让它在的位置。
+再重复一遍，input参数与任何我们设定的值没关系，只与时间有关，随着时间的增长，动画的进度也自然的增加，input参数就代表了当前动画的进度。而返回值则表示动画的当前数值进度
+通过上面我们应该知道了input参数getInterpolation()返回值的关系了，下面我们来看看LinearInterpolator是如何重写TimeInterpolator的
+---------------------
+public class LinearInterpolator implements Interpolator {
+
+    …………
+
+    public float getInterpolation(float input) {
+        return input;
+    }
+}
+
+从上面可以看到，LinearInterpolator在getInterpolation函数中，直接把input值返回，即以当前动画的进度做为动画的数值进度，这也就表示当前动画的数值进度与动画的时间进度一致，比如，如果当前动画进度为0，那动画的数值进度也是0，那如果动画进度为0.5，那动画的数值进度也是在0.5，当动画结束，动画的进度就变成1了，而动画的数值进度也是1了。
+下面我们就用一个例子来讲一下如何自定义插值器。
+从上面的讲解中也可以看到，我们自定义插值器，只需要实现TimeInterpolator接口就可以了：
+
+public class MyInterploator implements TimeInterpolator {
+    @Override
+    public float getInterpolation(float input) {
+        return 1-input;
+    }
+}
+
+在getInterpolation函数中，我们将进度反转过来，当传0的时候，我们让它数值进度在完成的位置，当完成的时候，我们让它在开始的位置
+然后使用我们的插值器：
+
+ValueAnimator animator = ValueAnimator.ofInt(0,600);
+
+animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        int curValue = (int)animation.getAnimatedValue();
+        tv.layout(tv.getLeft(),curValue,tv.getRight(),curValue+tv.getHeight());
+    }
+});
+animator.setDuration(1000);
+animator.setInterpolator(new MyInterploator());
+animator.start();
+
+从效果图中可见，我们将数值进度倒序返回——即随着动画进度的推进，动画的数值进度从结束位置进行到起始位置；
+到这里，想必大家应该已经理解了getInterpolation(float input)函数中input参数与返回值的关系，在重写插值器时，需要强有力的数学知识做基础，一般而言，都是通过数学公式来计算插值器的变化趋势的，大家可以再分析分析其它几个插值器的写法；可以把它他们总结成公式，放到公式画图软件里，看看对应的数学图在(0,1)之间的走向，这个走向就是插值器在数值变化时的样子。
+---------------------
+
+二、Evaluator
+1、概述
+
+
+    ofInt(0,400)     ——————>       加速器         ——————>      Evaluator      ——————>          监听器返回
+（定义动画数字区间）        （返回当前数字进度如0.2）    （根据数字进度计算您当前值）     在（AnimatorUpdateListener）
+
+
+
+
+----------本系列是参考‘启舰’在CSDN上的系列来学习和实操的代码 -----------

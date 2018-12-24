@@ -12,6 +12,7 @@ import com.xibei.personaldesign.itemDemo.ActivityAnimation1;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation2;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation3;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation4;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation5;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityAnimation2(),"动画二 : 动画一 + interpolater 效果");
         addData(new ActivityAnimation3(),"动画三 : 代码实现动画效果");
         addData(new ActivityAnimation4(),"动画四 ：View Anmation 和 Value Animator的对比");
+        addData(new ActivityAnimation5(),"动画五 ： Value Animator 插值器");
 
     }
 

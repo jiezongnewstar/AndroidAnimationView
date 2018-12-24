@@ -1,22 +1,16 @@
 package com.xibei.personaldesign.itemDemo;
-
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.xibei.personaldesign.R;
-
 public class ActivityAnimation4 extends Activity implements View.OnClickListener {
 
     Button btn_view_anmation, btn_value_animator, btn_repeat, btn_cancle;
-
     View animation4_view;
-
     ValueAnimator valueAnimator;
 
     @Override
@@ -63,7 +57,6 @@ public class ActivityAnimation4 extends Activity implements View.OnClickListener
             case R.id.btn_repeat:
                 runAnimator(true);
                 break;
-
         }
     }
 
@@ -80,6 +73,7 @@ public class ActivityAnimation4 extends Activity implements View.OnClickListener
                 int currentValue = (int) animation.getAnimatedValue();
                 animation4_view.layout(currentValue, currentValue, currentValue + animation4_view.getWidth(),
                         currentValue + animation4_view.getHeight());
+
             }
         });
 
