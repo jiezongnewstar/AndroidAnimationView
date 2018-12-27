@@ -1,8 +1,13 @@
 package com.xibei.personaldesign.itemDemo;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -27,9 +32,12 @@ public class ActivityAnimation1 extends Activity implements View.OnClickListener
     Animation animation_9;
     Animation animation_10;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        Transition slide = TransitionInflater.from(this).inflateTransition(R.transition.slide);
         setContentView(R.layout.activity_item_animation_1);
         btn_animation_1 = findViewById(R.id.btn_animation_1);
         btn_animation_2 = findViewById(R.id.btn_animation_2);
@@ -52,8 +60,7 @@ public class ActivityAnimation1 extends Activity implements View.OnClickListener
         btn_animation_9.setOnClickListener(this);
         btn_animation_10.setOnClickListener(this);
         animation1_view = findViewById(R.id.animation1_view);
-
-
+        getWindow().setEnterTransition(slide);
     }
 
     @Override

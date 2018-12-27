@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xibei.personaldesign">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,28 +11,39 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".itemDemo.ActivityAnimation1"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".itemDemo.ActivityAnimation2"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".itemDemo.ActivityAnimation3"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".itemDemo.ActivityAnimation4"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".itemDemo.ActivityAnimation5"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".itemDemo.ActivityAnimation6"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".itemDemo.ActivityAnimation1"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".itemDemo.ActivityAnimation2"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".itemDemo.ActivityAnimation3"
-        android:screenOrientation="portrait"/>
-        <activity android:name=".itemDemo.ActivityAnimation4"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".itemDemo.ActivityAnimation5"
-        android:screenOrientation="portrait"/>
-
-
     </application>
-
 
 
 </manifest>
