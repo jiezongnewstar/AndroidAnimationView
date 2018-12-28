@@ -23,6 +23,7 @@ public class SplashActivity extends Activity {
 
     WebView webView;
     Button btn_jump;
+    View backView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -33,38 +34,40 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
 
         webView = findViewById(R.id.webview);
+        backView = findViewById(R.id.backView);
         btn_jump = findViewById(R.id.btn_jump);
 
-        btn_jump.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AnimationSet animationSet = new AnimationSet(false);
-                animationSet.addAnimation(new RotateAnimation(0, 90));
-                animationSet.addAnimation(new TranslateAnimation(0f, 0f, 0f, -400f));
-                animationSet.addAnimation(new TranslateAnimation(0f, 900f, 0f, 0f));
-                animationSet.setFillAfter(true);
-                animationSet.setDuration(2000);
-                btn_jump.startAnimation(animationSet);
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        getWindow().setExitTransition(explode);
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class),
-                                ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this).toBundle());
-                        finish();
-                    }
-                }, 2000);
-
-            }
-        });
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
                 if (newProgress == 100) {
+                    btn_jump.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            backView.setVisibility(View.VISIBLE);
+                            AnimationSet animationSet = new AnimationSet(false);
+                            animationSet.addAnimation(new RotateAnimation(0, 90));
+                            animationSet.addAnimation(new TranslateAnimation(0f, 0f, 0f, -400f));
+                            animationSet.addAnimation(new TranslateAnimation(0f, 900f, 0f, 0f));
+                            animationSet.setFillAfter(true);
+                            animationSet.setDuration(2000);
+                            btn_jump.startAnimation(animationSet);
 
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getWindow().setExitTransition(explode);
+                                    startActivity(new Intent(SplashActivity.this, MainActivity.class),
+                                            ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this).toBundle());
+                                    finish();
+                                }
+                            }, 2000);
+
+                        }
+                    });
                 }
             }
         });

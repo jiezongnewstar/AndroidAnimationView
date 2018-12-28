@@ -18,5 +18,12 @@
         android:layout_height="wrap_content"
         android:text="进入动画世界"/>
 
+    <View
+        android:id="@+id/backView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"/>
+
 
 </RelativeLayout>
