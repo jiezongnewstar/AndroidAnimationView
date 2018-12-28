@@ -161,6 +161,237 @@ animator.start();
  如果我们使用ofInt()来定义动画，动画中的值应该都是Int类型，如果我们用ofFloat()来定义动画，那么Evaluator返回
  值必然也是Float类型的值。所以每种定义方式所对应的Evaluator必然是它专用的；Evaluator
 
+ValueAnimator animator = ValueAnimator.ofInt(0,600);
+
+animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        int curValue = (int)animation.getAnimatedValue();
+        tv.layout(tv.getLeft(),curValue,tv.getRight(),curValue+tv.getHeight());
+    }
+});
+animator.setDuration(1000);
+animator.setEvaluator(new IntEvaluator());
+animator.setInterpolator(new BounceInterpolator());
+animator.start();
+但大家会说了，在此之前，我们在使用ofInt()时，从来没有给它定义过使用IntEvaluator来转换值啊，那怎么也能正常运行呢？因为ofInt和ofFloat都是系统直接提供的函数，所以在使用时都会有默认的加速器和Evaluator来使用的，不指定则使用默认的；对于Evaluator而言，ofInt()的默认Evaluator当然是IntEvaluator;而FloatEvalutar默认的则是FloatEvalutor;
+上面，我们已经弄清楚Evaluator定义和使用方法，下面我们就来看看IntEvaluator内部是怎么实现的吧：
+/**
+ * This evaluator can be used to perform type interpolation between <code>int</code> values.
+ */
+public class IntEvaluator implements TypeEvaluator<Integer> {
+
+    /**
+     * This function returns the result of linearly interpolating the start and end values, with
+     * <code>fraction</code> representing the proportion between the start and end values. The
+     * calculation is a simple parametric calculation: <code>result = x0 + t * (v1 - v0)</code>,
+     * where <code>x0</code> is <code>startValue</code>, <code>x1</code> is <code>endValue</code>,
+     * and <code>t</code> is <code>fraction</code>.
+     *
+     * @param fraction   The fraction from the starting to the ending values
+     * @param startValue The start value; should be of type <code>int</code> or
+     *                   <code>Integer</code>
+     * @param endValue   The end value; should be of type <code>int</code> or <code>Integer</code>
+     * @return A linear interpolation between the start and end values, given the
+     *         <code>fraction</code> parameter.
+     */
+    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+        int startInt = startValue;
+        return (int)(startInt + fraction * (endValue - startInt));
+    }
+}
+可以看到在IntEvaluator中只有一个函数(float fraction, Integer startValue, Integer endValue) ；
+其中fraction就是加速器中的返回值，表示当前动画的数值进度，百分制的小数表示。
+startValue和endValue分别对应ofInt(int start,int end)中的start和end的数值；
+比如我们假设当我们定义的动画ofInt(100,400)进行到数值进度20%的时候，那么此时在evaluate函数中，fraction的值就是0.2，startValue的值是100，endValue的值是400；理解上应该没什么难度。
+下面我们就来看看evaluate(float fraction, Integer startValue, Integer endValue) 是如何根据进度小数值来计算出具体数字的
+
+ return (int)(startInt + fraction * (endValue - startInt));
+大家对这个公式是否似曾相识？我们前面提到的公式：
+
+当前的值 = 100 + （400 - 100）* 显示进度
+
+3、自定义Evalutor
+前面我们看了IntEvalutor的代码，我们仿照IntEvalutor的实现方法，我们自定义一个MyEvalutor:
+首先是实现TypeEvaluator接口：
+public class MyEvaluator implements TypeEvaluator<Integer> {
+    @Override
+    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+        return null;
+    }
+}
+
+这里涉及到泛型的概念，不理解的同学可以去看看《夯实JAVA基本之一 —— 泛型详解(1):基本使用》
+在实现TypeEvaluator，我们给它指定它的返回是Integer类型，这样我们就可以在ofInt()中使用这个Evaluator了。再说一遍原因：只有定义动画时的数值类型与Evalutor的返回值类型一样时，才能使用这个Evalutor；很显然ofInt()定义的数值类型是Integer而我们定义的MyEvaluator，它的返回值类型也是Integer；所以我们定义的MyEvaluator可以给ofInt（）来用。同理，如果我们把实现的TypeEvaluator填充为为Float类型，那么这个Evalutor也就只能给FloatEvalutor用了。
+屁话了那么多，现在转入正题，我们来简单实现evaluate函数，代码如下：
+
+public class MyEvaluator implements TypeEvaluator<Integer> {
+    @Override
+    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+        int startInt = startValue;
+        return (int)(200+startInt + fraction * (endValue - startInt));
+    }
+}
+
+我们在IntEvaluator的基础上修改了下，让它返回值时增加了200；所以当我们定义的区间是ofInt(0,400)时，它的实际返回值区间应该是(200,600)
+我们看看MyEvaluator的使用：
+ValueAnimator animator = ValueAnimator.ofInt(0,400);
+
+animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        int curValue = (int)animation.getAnimatedValue();
+        tv.layout(tv.getLeft(),curValue,tv.getRight(),curValue+tv.getHeight());
+    }
+});
+animator.setDuration(1000);
+animator.setEvaluator(new MyEvaluator());
+animator.start();
+
+在加速器中，我们可以通过自定义加速器的返回的数值进度来改变返回数值的位置。比如上面我们实现的倒序动画
+在Evaluator中，我们又可以通过改变进度值所对应的具体数字来改变数值的位置。
+所以，结论来了：
+我们可以通过重写加速器改变数值进度来改变数值位置，也可以通过改变Evaluator中进度所对应的数值来改变数值位置。
+（2）、实现倒序输出实例
+public class ReverseEvaluator implements TypeEvaluator<Integer> {
+    @Override
+    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+        int startInt = startValue;
+        return (int) (endValue - fraction * (endValue - startInt));
+    }
+}
+
+其中 fraction * (endValue - startInt)表示动画实际运动的距离，我们用endValue减去实际运动的距离就表示随着运动距离的增加，离终点越来越远，这也就实现了从终点出发，最终运动到起点的效果了。
+ValueAnimator animator = ValueAnimator.ofInt(0,400);
+
+animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        int curValue = (int)animation.getAnimatedValue();
+        tv.layout(tv.getLeft(),curValue,tv.getRight(),curValue+tv.getHeight());
+    }
+});
+animator.setDuration(1000);
+animator.setEvaluator(new ReverseEvaluator());
+animator.start();
+
+4、关于ArgbEvalutor
+我们上面讲了IntEvaluator和FloatEvalutor，还说了Evalutor一般来讲不能通用，会报强转错误，也就是说，只有在数值类型相同的情况下，Evalutor才能共用。
+其实除了IntEvaluator和FloatEvalutor，在android.animation包下，还有另外一个Evalutor叫ArgbEvalutor。
+ArgbEvalutor是用来做颜色值过渡转换的。可能是谷歌的开发人员觉得大家对颜色值变换可能并不知道要怎么做，所以特地给我们提供了这么一个过渡Evalutor；
+我们先来简单看一下ArgbEvalutor的源码：（这里先不做具体讲解原理，最后会讲原理，这里先会用）
+
+public class ArgbEvaluator implements TypeEvaluator {
+    public Object evaluate(float fraction, Object startValue, Object endValue) {
+        int startInt = (Integer) startValue;
+        int startA = (startInt >> 24);
+        int startR = (startInt >> 16) & 0xff;
+        int startG = (startInt >> 8) & 0xff;
+        int startB = startInt & 0xff;
+
+        int endInt = (Integer) endValue;
+        int endA = (endInt >> 24);
+        int endR = (endInt >> 16) & 0xff;
+        int endG = (endInt >> 8) & 0xff;
+        int endB = endInt & 0xff;
+
+        return (int)((startA + (int)(fraction * (endA - startA))) << 24) |
+                (int)((startR + (int)(fraction * (endR - startR))) << 16) |
+                (int)((startG + (int)(fraction * (endG - startG))) << 8) |
+                (int)((startB + (int)(fraction * (endB - startB))));
+    }
+}
+
+我们在这里关注两个地方，第一返回值是int类型，这说明我们可以使用ofInt()来初始化动画数值范围。第二：颜色值包括A,R,G,B四个值，每个值是8位所以用16进制表示一个颜色值应该是0xffff0000（纯红色）
+下面我们就使用一下ArgbEvaluator，并看看效果：
+ValueAnimator animator = ValueAnimator.ofInt(0xffffff00,0xff0000ff);
+animator.setEvaluator(new ArgbEvaluator());
+animator.setDuration(3000);
+
+animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        int curValue = (int)animation.getAnimatedValue();
+        tv.setBackgroundColor(curValue);
+
+    }
+});
+
+animator.start();
+
+在这段代码中，我们将动画的数据范围定义为(0xffffff00,0xff0000ff)，即从黄色，变为蓝色。
+在监听中，我们根据当前传回来的颜色值，将其设置为textview的背景色
+到这里，我们就已经知道ArgbEvalutor的使用方法和效果了，下面我们再来回头看看ArgbEvalutor的实现方法
+2、ArgbEvalutor的实现原理
+/**
+ * This evaluator can be used to perform type interpolation between integer
+ * values that represent ARGB colors.
+ */
+public class ArgbEvaluator implements TypeEvaluator {
+
+    /**
+     * This function returns the calculated in-between value for a color
+     * given integers that represent the start and end values in the four
+     * bytes of the 32-bit int. Each channel is separately linearly interpolated
+     * and the resulting calculated values are recombined into the return value.
+     *
+     * @param fraction The fraction from the starting to the ending values
+     * @param startValue A 32-bit int value representing colors in the
+     * separate bytes of the parameter
+     * @param endValue A 32-bit int value representing colors in the
+     * separate bytes of the parameter
+     * @return A value that is calculated to be the linearly interpolated
+     * result, derived by separating the start and end values into separate
+     * color channels and interpolating each one separately, recombining the
+     * resulting values in the same way.
+     */
+    public Object evaluate(float fraction, Object startValue, Object endValue) {
+        int startInt = (Integer) startValue;
+        int startA = (startInt >> 24);
+        int startR = (startInt >> 16) & 0xff;
+        int startG = (startInt >> 8) & 0xff;
+        int startB = startInt & 0xff;
+
+        int endInt = (Integer) endValue;
+        int endA = (endInt >> 24);
+        int endR = (endInt >> 16) & 0xff;
+        int endG = (endInt >> 8) & 0xff;
+        int endB = endInt & 0xff;
+
+        return (int)((startA + (int)(fraction * (endA - startA))) << 24) |
+                (int)((startR + (int)(fraction * (endR - startR))) << 16) |
+                (int)((startG + (int)(fraction * (endG - startG))) << 8) |
+                (int)((startB + (int)(fraction * (endB - startB))));
+    }
+}
+
+英文注释的那一坨大家有兴趣，可以看已看看，我这里就直接讲代码了
+这段代码分为三部分，第一部分根据startValue求出其中A,R,G,B中各个色彩的初始值；第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值，最后是根据当前动画的百分比进度求出对应的数值
+我们先来看第一部分：根据startValue求出其中A,R,G,B中各个色彩的初始值
+int startInt = (Integer) startValue;
+int startA = (startInt >> 24);
+int startR = (startInt >> 16) & 0xff;
+int startG = (startInt >> 8) & 0xff;
+int startB = startInt & 0xff;
+
+所以我们的初始值是0xffffff00,那么求出来的startA = 0xff,startR = oxff,startG = 0xff,startB = 0x00;
+关于通过位移和与运算如何得到指定位的值的问题，我就不再讲了，大家如果不理解，可以搜一下相关运算符使用方法的文章。
+同样，我们看看第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值：
+int endInt = (Integer) endValue;
+int endA = (endInt >> 24);
+int endR = (endInt >> 16) & 0xff;
+int endG = (endInt >> 8) & 0xff;
+int endB = endInt & 0xff;
+原理与startValue求A,R,G,B对应值的一样，所以对于我们上面例子中初始值ofInt(0xffffff00,0xff0000ff)中的endValue:0xff0000ff所对应的endA = 0xff,endR = ox00;endG = 0x00;endB = 0xff;
+最后一部分到了，就是如何根据进度来求得变化的值，我们先看看下面这句是什么意思：
+
+对于这个公式大家应该很容易理解，与IntEvaluator中的计算公式一样，就是根据透明度A的初始值、结束值求得当前进度下透明度A应该的数值。
+同理
+startR + (int)(fraction * (endR - startR)表示当前进度下的红色值
+startG + (int)(fraction * (endG - startG))表示当前进度下的绿色值
+startB + (int)(fraction * (endB - startB))表示当前进度下的蓝色值
+然后通过位移和或运算将当前进度下的A,R,G,B组合起来就是当前的颜色值了。
+
 
 
 ----------本系列是参考‘启舰’在CSDN上的系列来学习和实操的代码 -----------

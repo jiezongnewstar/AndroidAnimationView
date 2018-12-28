@@ -55,7 +55,6 @@ public class SplashActivity extends Activity {
                             animationSet.setFillAfter(true);
                             animationSet.setDuration(2000);
                             btn_jump.startAnimation(animationSet);
-
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
