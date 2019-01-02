@@ -14,6 +14,7 @@ import com.xibei.personaldesign.itemDemo.ActivityAnimation3;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation4;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation5;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation6;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation7;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityAnimation4(),"动画四 ：View Anmation 和 Value Animator的对比");
         addData(new ActivityAnimation5(),"动画五 ：Value Animator 插值器");
         addData(new ActivityAnimation6(),"动画六 ：Value Animator Evaluator");
+        addData(new ActivityAnimation7(),"动画七 ：Value Animator ofObject");
     }
 
 
