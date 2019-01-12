@@ -15,7 +15,7 @@ public class ActivityAnimation7 extends Activity implements View.OnClickListener
 
     TextView textview;
 
-    Button btn_01,btn_02,btn_03,btn_04;
+    Button btn_01,btn_02;
 
     ValueAnimator valueAnimator;
 
@@ -30,13 +30,11 @@ public class ActivityAnimation7 extends Activity implements View.OnClickListener
         circleview = findViewById(R.id.circleview);
         btn_01 = findViewById(R.id.btn_01);
         btn_02 = findViewById(R.id.btn_02);
-        btn_03 = findViewById(R.id.btn_03);
-        btn_04 = findViewById(R.id.btn_04);
+
 
         btn_01.setOnClickListener(this);
         btn_02.setOnClickListener(this);
-        btn_03.setOnClickListener(this);
-        btn_04.setOnClickListener(this);
+
 
     }
 
@@ -60,10 +58,6 @@ public class ActivityAnimation7 extends Activity implements View.OnClickListener
                 break;
             case R.id.btn_02:
                 circleview.doPointAnim();
-                break;
-            case R.id.btn_03:
-                break;
-            case R.id.btn_04:
                 break;
         }
         if (valueAnimator!=null){

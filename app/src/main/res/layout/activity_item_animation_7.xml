@@ -50,19 +50,8 @@
                 android:layout_height="wrap_content"
                 android:text="objectAnimtor" />
 
-            <Button
-                android:id="@+id/btn_03"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="ReverseEvaluator" />
 
-            <Button
-                android:id="@+id/btn_04"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="ArgbEvaluator" />
+
 
         </LinearLayout>
 

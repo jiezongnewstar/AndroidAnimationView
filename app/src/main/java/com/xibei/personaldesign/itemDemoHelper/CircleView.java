@@ -37,7 +37,7 @@ public class CircleView extends View {
     }
 
     public void doPointAnim(){
-        ValueAnimator animator = ValueAnimator.ofObject(new PointEvaluator(),new Point(10),new Point(300));
+        ValueAnimator animator = ValueAnimator.ofObject(new PointEvaluator(),new Point(10),new Point(100));
         animator.setDuration(1000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

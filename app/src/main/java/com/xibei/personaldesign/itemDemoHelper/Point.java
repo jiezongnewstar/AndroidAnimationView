@@ -16,7 +16,6 @@ public class Point {
         }
     }
 
-
     public void setRadius(int radius) {
         this.radius = radius;
     }

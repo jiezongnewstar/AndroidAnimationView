@@ -61,7 +61,6 @@ public class SplashActivity extends Activity {
                                     getWindow().setExitTransition(explode);
                                     startActivity(new Intent(SplashActivity.this, MainActivity.class),
                                             ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this).toBundle());
-                                    finish();
                                 }
                             }, 2000);
 
