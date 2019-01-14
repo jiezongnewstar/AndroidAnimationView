@@ -286,7 +286,102 @@ protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
 }
 
+3、使用MyPointView
+首先，在MyActivity的布局中添加MyPointView的使用(main.xml)：
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
+    <Button
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:padding="10dp"
+            android:text="start anim"
+            />
+
+    <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:text="cancel anim"
+            />
+    <TextView
+            android:id="@+id/tv"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:background="#ffff00"
+            android:text="Hello qijian"/>
+
+    <com.example.BlogObjectAnimator1.MyPointView
+            android:id="@+id/pointview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv"/>
+
+</RelativeLayout>
+
+布局代码很好理解，根据效果图中的布局效果来理解，非常容易，就不再多讲
+然后看看在MyActivity中，点击start anim后的处理方法：
+
+public class MyActivity extends Activity {
+    private Button btnStart;
+    private MyPointView mPointView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        btnStart = (Button) findViewById(R.id.btn);
+        mPointView = (MyPointView)findViewById(R.id.pointview);
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doPointViewAnimation();
+            }
+        });
+    }
+  …………
+}
+
+在点击start anim按钮后，开始执行doPointViewAnimation()函数，doPointViewAnimation()函数代码如下：
+
+private void doPointViewAnimation(){
+     ObjectAnimator animator = ObjectAnimator.ofInt(mPointView, "pointRadius", 0, 300, 100);
+      animator.setDuration(2000);
+      animator.start();
+}
+
+在这段代码中，着重看ObjectAnimator的构造方法，首先要操作的控件对象是mPointView，然后对应的属性是pointRadius，然后值是从0到300再到100；
+所以在动画开始以后，ObjectAnimator就会实时地把动画中产生的值做为参数传给MyPointView类中的setPointRadius(int radius)函数，然后调用setPointRadius(int radius)。由于我们在setPointRadius(int radius)中实时地设置圆形的半径值然后强制重绘当前界面，所以可以看到圆形的半径会随着动画的进行而改变。
+
+四、注意——何时需要实现对应属性的get函数
+我们再来看一下ObjectAinimator的下面三个构造方法：
+public static ObjectAnimator ofFloat(Object target, String propertyName, float... values)
+public static ObjectAnimator ofInt(Object target, String propertyName, int... values)
+public static ObjectAnimator ofObject(Object target, String propertyName,TypeEvaluator evaluator, Object... values)
+
+
+前面我们已经分别讲过三个函数的使用方法，在上面的三个构造方法中最后一个参数都是可变长参数。我们也讲了，他们的意义就是从哪个值变到哪个值的。
+那么问题来了：前面我们都是定义多个值，即至少两个值之间的变化，那如果我们只定义一个值呢，如下面的方式：(同样以MyPointView为例)
+
+ObjectAnimator animator = ObjectAnimator.ofInt(mPointView, "pointRadius",100);
+
+我们在这里只传递了一个变化值100；那它从哪里开始变化呢？我们来看一下效果：
+代码如下：
+ObjectAnimator animator = ObjectAnimator.ofInt(mPointView, "pointRadius",100);
+animator.setDuration(2000);
+animator.start();
 
 
 ---------------------

@@ -4,17 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textview"
+    <com.xibei.personaldesign.itemDemoHelper.SetCircleView
+        android:id="@+id/setCircleView"
         android:layout_centerHorizontal="true"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:textSize="40sp"
-        android:text="A"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:background="@android:color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="100dp"/>
 
     <LinearLayout
