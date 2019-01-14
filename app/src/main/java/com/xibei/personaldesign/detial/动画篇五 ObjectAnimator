@@ -1,0 +1,296 @@
+上几篇给大家讲了ValueAnimator，但是ValueAnimator有个缺点，就是只能对数值对动画计算。我们要想对数值动画计算。
+我们要想对哪个控件操作，需要监听动画过程。这样使用起来相比补间动画而言就相对比较麻烦。
+为了能让动画直接与对应控件相关联，以使我们从监听动画过程中解放出来，谷歌的开发人员在ValueAnimator的基础上，
+又派生了一个类Object，由于ObjectAnimator是派生自ValueAnimator的，所以ValueAnimator中所能使用的方法，
+在ObjectAnimator 中都可以正常使用。
+但ObjectAnimator也重写了几个方法，比如ofInt(),ofFloat()等。 我们先看看利用ObjectAnimator重写的ofFlaot
+方法如何实现一个动画（改变透明度）
+
+ObjectAnimator animator = ObjectAnimator.ofFloat(textview,"alpha",1,0,1);
+animator.setDuration(2000);
+animator.start();
+
+public static ObjectAnimator ofFloat(Object target,String propertyName,float ...value)
+
+·第一个参数用于指定这个动画要操作的是哪个控件
+·第二个参数用于指定这个动画要操作这个控件哪个属性
+·第三个参数是可变参数，这个就跟ValueAnimator中的可变长参数的意义一样了，就是指这个属性值是从哪变到哪。像我们
+上面的代码中指定的就是讲textview的alpha属性从0变到1再变到0
+
+下面我嫩再来看一下如何实现旋转效果：
+
+ObjectAnimator animator = ObjectAnimator.ofFloat(textview,"rotation",0,180,0);
+animator.setDuration(2000);
+animator.start();
+
+从代码中可以看到，我们只需要改变ofFloat()的第二个参数的值就可以实现对应的动画；
+那么问题来了，我们该怎么知道第二个参数的值是啥。
+
+2、setter函数
+我们再回来看构造改变rotation值的ObjectAnimator的方法
+
+ObejctAnimator animator = ObjectAnimator.ofFloat(textview,"rotation",0,180,0);
+
+TextView控件有rotation这个属性吗？没有,不光TextView没有,连它的父类View中也没有这个属性。那它是这么改变
+这个值的呢？其实，ObjectAnimator做动画，并不是根据控件xml中的属性来改变的，而是通过指定属性所对应的set方法
+来改变的。比如，我们上面指定的改变rotation的属性值，ObjectAnimator在做动画时就会到指定控件(TextView)中去
+找对应的setRoation()方法来改变控件中对应的值。同样的道理，当我们再最开始的示例代码中，指定改变"alpha"属性
+值的时候，ObjectAnimator也会到TextView中去找对应的setAlpha()方法。那TextView中都有这些方法吗，有的，这些
+方法都是从View中继承过来的，在View中有关动画，总共有下面机组set方法：
+
+//透明度
+public void setAlpha(float alpha)
+
+//旋转角度 roation rotaionX rotaionY
+public void setRotation(float rotation)
+public void setRotationX(float rotatonX)
+public void setRotationY(float rotationY)
+
+//平移 translationX translationY
+public void setTranslationX(float translationX)
+public void setTranslationY(float translationY)
+
+//缩放 scaleX scaleY
+public void setScaleX(float scaleX)
+public void setScaleY(float scaleY)
+
+可以看到在View中已经实现了有关alpha，rotation，translation，sclae相关的set方法。所以我们在构造ObjectAnimator
+可以直接使用。在开始逐个看这些函数的使用方法前，我们先做一个总结：
+1、要使用ObjectAnimator 来构造动画，要操作的控件中，必须存在对应的属性的set方法
+2、setter 方法的命名必须以驼峰拼写法命名，即set后每个单词首字母大写，其余字母小写，即类似于setPropertyName
+所对应的属性为propertyNmae
+下面我们就来看一下上面中各个方法的使用方法及作用。
+有关alpha的用法，上面已经讲过了，下面我们看看其他的
+
+（1）、setRoaationX、setRotationY与setRotation
+·setRotationX(float rotationX) :表示围绕X轴旋转，roationX表示旋转度数
+·setRoationY(float rotationY)  :表示围绕Y轴旋转，rotationY表示旋转度数
+·setRotation(float rotation)   :表示围绕Z轴旋转，rotation表示旋转度数
+
+
+先来看看setRitationX的效果：
+
+ObjectAnimator animator = ObjectAnimator.ofFloat(textview,"rotationX",0,270,0);
+animator.setDuration(2000);
+animator.start();
+
+从效果图中明显看出，textview的旋转方法是围绕X轴旋转的，我们设定为0度旋转到270度再返回0度
+然后再来看看setRotationY的使用方法与效果：
+
+ObejectAnimator animator = ObjectAnimator.ofFloat(textview,"rotationY",0,180,0);
+animator.setDuration(2000);
+animaor.start();
+
+从效果图中明显可以看出围绕Y轴旋转的。
+我们再来看看setRotation的用法与效果。
+
+ObjectAnimator animaotr = ObjectAnimator.ofFloat(textview,"rotation",0,270,0);
+animator.setDuration(2000);
+animator.start();
+
+(2) setTranslationX 与 setTranlsationY
+·setTranslationX(float translationX):表示在X轴上的平移距离，以当前控件为原点，向右为正方向，参数translationX表示移动距离
+·setTranslationY(float translationY):表示在Y轴上平移的距离，以当前控件为原点，向下为正方向，参数translationY表示移动距离
+
+我们先看看setTranlsataionX 的用法：
+
+ObjectAnimator animator = ObjectAnimaor.ofFloat(textview,"translateX",0,200,-200,0);
+animator.setDuration(2000);
+animator.start();
+
+所以，我们上面在构造动画时，指定的移动距离是(0,200,-200,0),所以控件会从自身所有位置向右移动200像素，然后再移动到
+距离原点-200的位置，最后回到原点；
+然后我们来看看setTranslateY的用法
+
+ObjectAnimator animator = ObjectAnimator.ofFloat(textview,"translationY",0,200,-100,0);
+animator.setDuration(2000);
+animator.start();
+
+(3)、setScale 与setScaleY
+·setScaleX(float scaleX) ：在X轴上缩放，scaleX表示缩放倍数
+·setsCaleY(float scaleY) : 在Y轴上缩放，scaleY表示缩放倍数
+
+
+我们来看看setScaleX的用法：
+
+ObjectAnimator animator = ObjectAnimator.ofFloat(textview,"scaleX",0,3,1);
+animator.setDuration(2000);
+animator.start();
+
+
+在效果图中，从0倍放大到3倍，然后再还原到1倍的原始状态。
+然后再看看setScaleY的用法
+
+ObjectAnimator animator = ObjectAnimator.ofFloat(textview,"scaleY",0,3,1);
+animator.setDuraton(2000);
+animator.start();
+
+好了,到这里相关View中自带的set函数讲完了,我们来看看ObjectAnimator是如何实现控件动画效果的。
+
+
+3、ObjectAnimator 动画原理
+我们先来看一下
+
+ValueAnimator 动画流程
+
+        （1）                      (2)                       (3)                          (4)
+     ofint(0,400)   ---------      加速器     ---------   Evaluator         --------    监听器返回
+  (定义动画数字区间)        (返回当前数字进度如0.2)   (根据数字进度计算当前值)     在AnimatorUpdateListener中返回
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+ObjectAnimator 动画流程
+
+           (A)                       (B)                        (C)                                    (D)
+ ofFloat(tv,"scaleY",0,3)  -------- 加速器   --------------   Evaluator  -----------------------    调用set函数
+   (定义动画对象及区间)       (返回当前数字进度如0.2)     (根据数字进度计算当前值)    (根据属性拼装set函数并反射调用，并将当前值作为参数传入)
+
+
+ 在这张图中，将ValueAnimator的动画流程与ObjectAnimator的动画流程做了个对比
+ 可以看到ObjectAnimator的动画流程中，也是首先通过加速器产生当前进度的百分比，然后再经过Evaluator生成对应百分比所对应的数字值。
+ 这两步与ValueAnimator是完全一样的，唯一不同的是最后一步，在ValueAnimator中，我们要通过添加监听器来监听当前数字值。而在ObjectAnimator
+ 中，则是先根据属性值拼装成对应的set函数的名字，比如这的scaleY的拼装方法就是将属性的第一个字母强制大写后，与set拼接，所以就是setScaleY。然后
+ 通过反射找到对应控件的setScaleY(float scaleY)函数，将当前数字值作为setScaleY(float scaleY)的参数将其传入。
+
+ 根据上面的流程，这里有几个注意事项：
+ (1) 拼接set函数的方法：
+    上面我们也说了是首先强制将属性的第一个字母大写，然后与set拼接，就是对应的set函数的名字。注意，只是强制将属性的第一个字母大写，后面部分
+    保持不变的。反过来，如果我们的函数名命名为setScalePoint(float f),那我们在写属性时可以写成“scalePointX”或者“ScalePointX”都是可以的，即
+    第一个字母大小写可以随意，但后面的部分不许与set方法后的大小写保持一致。
+ (2)如何确定函数的参数类型：
+    上面我们知道了如何找到对应的函数名，那对应的参数方法的参数类型如何确定呢？我们在讲ValueAnimator的时候说过，动画过程中产生的数字值与
+    构造时传图的值类型是一样的。由于ObjectAnimator与ValueAnimator在插值器和Evaluator这一步产生的，所以ObjectAnimator的动画中产生的数值
+    类型也是与构造时的类型一样的。那么问题来了，像我们的构造方法
+    ObjectAnimator animator = ObjectAnimator.ofFloat(textview,"scaleY",0,3,1);
+    由于构造时使用的是ofFloat函数，所以中间值的类型应该是Float类型的，所以在最后一步拼装出来的set函数应该是setScaleY(float xx)的样式；
+    这时，系统就会利用反射来找到setScaleY(float xxx)函数，并把当前的动画数值作为参数传进去。
+    那么问题来了，如果没有类似setScaleY(float xxx)的函数，我们只实现了一个setScaleY(int xxx)的函数怎么办？这里虽然函数名一样,但参数
+    类型不一样的，那么系统就会报一个错误：
+    意思就是对应函数的指定参数类型没有找到。
+ (3)调用set函数以后怎么办？从ObjectAnimator的流程可以看到，ObjectAnimator值负责把动画过程中的数值传到对应属性的set函数中就结束了，注意
+ 传给set函数以后就结束了！set函数就相当于我们再ValueAnimator中添加的监听的作用，set函数中对控件的操作还需要我们手动来写。
+
+ 那我们来看看View中的setScaleY是怎么实现的吧：
+ /**
+  * Sets the amount that the view is scaled in Y around the pivot point, as a proportion of
+  * the view's unscaled width. A value of 1 means that no scaling is applied.
+  *
+  * @param scaleY The scaling factor.
+  * @see #getPivotX()
+  * @see #getPivotY()
+  *
+  * @attr ref android.R.styleable#View_scaleY
+  */
+ public void setScaleY(float scaleY) {
+     ensureTransformationInfo();
+     final TransformationInfo info = mTransformationInfo;
+     if (info.mScaleY != scaleY) {
+         invalidateParentCaches();
+         // Double-invalidation is necessary to capture view's old and new areas
+         invalidate(false);
+         info.mScaleY = scaleY;
+         info.mMatrixDirty = true;
+         mPrivateFlags |= DRAWN; // force another invalidation with the new orientation
+         invalidate(false);
+     }
+ }
+
+
+ 大家不必理解这一坨代码的意义，因为这些代码是需要读懂View的整体流程以后才能看懂的，只需要跟着我的步骤来理解就行。
+ 这段代码总共分为两部分：第一步重新设置当期那控件的参数，第二步调用Invalidate()强制重绘；
+ 所以在重绘时，控件就会根据最新的控件参数来绘制了，所以我们就看到当前控件被缩放了。
+
+(4)set函数调用频率是多少：
+    由于我们知道动画在进行时，每隔十几毫秒会刷新一次，所以我们的set函数。至于set函数里面怎么来做，是我们自己的事了。
+    好了，在知道了ObejctAnimator的原理以后，下面就来看看如何自定义一个ObjectAnimator的属性了。
+
+
+
+    二、自定义ObjectAnimator属性
+    上面我们已经看了使用View自带的set函数所对应属性的方法，而且理解了ObjectAnimator的动画实现原理，下面我们来自定义一个属性来看看实现效果。
+    我们在开始之前再捋一下ObjectAnimator 的动画设置流程：ObejctAnimator需要制定操作的控件对象，在开始动画动画时，到控件类中去寻找设置属性
+    所对应的set函数，然后把动画中间值作为参数传给传给这个set函数并执行它。
+    所以，我们说了，控件类中必须所有要设置属性索要对应的set函数。所以为了自由控制控件的实现，我们这里自定义一个控件。大家知道这个自定义控件中，肯定
+    存在一个set函数与我们自定义的属性相对应。
+
+1、保存圆形信息类 -------Point
+为了保存圆形的信息，我们先定义一个类：(Ponit.java)
+
+public class Point {
+    private int mRadius;
+
+    public Point(int radius){
+        mRadius = radius;
+    }
+
+    public int getRadius() {
+        return mRadius;
+    }
+
+    public void setRadius(int radius) {
+        mRadius = radius;
+    }
+}
+
+这个类很好理解，只有一个成员变量mRadius,表示圆的半径。
+
+2、自定义控件——MyPointView
+然后我们自定义一个控件MyPointView,完整代码如下：
+public class MyPointView extends View {
+    private Point mPoint = new Point(100);
+
+    public MyPointView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (mPoint != null){
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(300,300,mPoint.getRadius(),paint);
+        }
+        super.onDraw(canvas);
+    }
+
+    void setPointRadius(int radius){
+        mPoint.setRadius(radius);
+        invalidate();
+    }
+
+}
+
+在这段代码中，首先来看我们前面讲到的set函数：
+
+void setPointRadius(int radius){
+    mPoint.setRadius(radius);
+    invalidate();
+}
+
+
+第一点，这个set函数所对应的属性应该是pointRadius或者PointRadius。前面我们已经讲了第一个字母大小写无所谓，后面的字母必须保持与set函数完全一致。
+第二点，在setPointRadius中，先将当前动画传过来的值保存到mPoint中，做为当前圆形的半径。然后强制界面刷新
+在界面刷新后，就开始执行onDraw()函数：
+
+@Override
+protected void onDraw(Canvas canvas) {
+    if (mPoint != null){
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(300,300,mPoint.getRadius(),paint);
+    }
+    super.onDraw(canvas);
+}
+
+
+
+
+---------------------
+作者：启舰
+来源：CSDN
+原文：https://blog.csdn.net/harvic880925/article/details/50598322
+版权声明：本文为博主原创文章，转载请附上博文链接！

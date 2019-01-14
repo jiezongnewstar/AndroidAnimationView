@@ -16,6 +16,7 @@ import com.xibei.personaldesign.itemDemo.ActivityAnimation5;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation6;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation7;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation8;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation9;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,14 +49,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void iniaData() {
         beans = new ArrayList<>();
-        addData(new ActivityAnimation1(),"动画一 : scale、rotate、translate、alpha、set");
-        addData(new ActivityAnimation2(),"动画二 : 动画一 + interpolater 效果");
-        addData(new ActivityAnimation3(),"动画三 : 代码实现动画效果");
-        addData(new ActivityAnimation4(),"动画四 ：View Anmation 和 Value Animator的对比");
-        addData(new ActivityAnimation5(),"动画五 ：Value Animator 插值器");
-        addData(new ActivityAnimation6(),"动画六 ：Value Animator Evaluator");
-        addData(new ActivityAnimation7(),"动画七 ：Value Animator ofObject");
-        addData(new ActivityAnimation8(),"动画八 ：Object Animator");
+        addData(new ActivityAnimation1(),"动画 1 : scale、rotate、translate、alpha、set");
+        addData(new ActivityAnimation2(),"动画 2 : 动画一 + interpolater 效果");
+        addData(new ActivityAnimation3(),"动画 3 : 代码实现动画效果");
+        addData(new ActivityAnimation4(),"动画 4 ：View Anmation 和 Value Animator的对比");
+        addData(new ActivityAnimation5(),"动画 5 ：Value Animator 插值器");
+        addData(new ActivityAnimation6(),"动画 6 ：Value Animator Evaluator");
+        addData(new ActivityAnimation7(),"动画 7 ：Value Animator ofObject");
+        addData(new ActivityAnimation8(),"动画 8 ：Object Animator");
+        addData(new ActivityAnimation9(),"动画 9 ：Object Animator 自定义set方法");
     }
 
 

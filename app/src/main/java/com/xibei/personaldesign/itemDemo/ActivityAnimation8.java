@@ -30,10 +30,6 @@ public class ActivityAnimation8 extends Activity implements View.OnClickListener
         findViewById(R.id.btn_06).setOnClickListener(this);
         findViewById(R.id.btn_07).setOnClickListener(this);
         findViewById(R.id.btn_08).setOnClickListener(this);
-        findViewById(R.id.btn_09).setOnClickListener(this);
-        findViewById(R.id.btn_10).setOnClickListener(this);
-        findViewById(R.id.btn_11).setOnClickListener(this);
-        findViewById(R.id.btn_12).setOnClickListener(this);
 
     }
 

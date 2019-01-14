@@ -10,7 +10,10 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:textSize="40sp"
+        android:text="A"
         android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@android:color/white"
         android:background="@android:color/black"
         android:layout_marginTop="100dp"/>
 
