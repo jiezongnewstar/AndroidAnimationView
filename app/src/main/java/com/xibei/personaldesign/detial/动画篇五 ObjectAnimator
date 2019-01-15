@@ -384,6 +384,162 @@ animator.setDuration(2000);
 animator.start();
 
 
+从效果图看起来是从0开始的，但是看Log可以看出来已经在出警告了：
+
+我们点击了三次start anim 按钮，所以这里报了三次，意思就是没找到pointRadius属性对应的getPointRadius()函数；
+仅且当我们只给动画设置一个值时，程序才会调用属性对应的get函数来得到动画初始值。如果动画没有初始值，那么就会使用系统默认值。
+比如ofInt()中使用的参数类型是int型，而系统的int值默认值是0，所以动画就会从0运动到100；也就是系统虽然在找不到属性对应的get函数时，会给出警告
+但同时会用系统默认值作为动画初始值。
+
+如果通过给自定义控件MyPointView 设置了get函数，那么将会以get函数的返回值作为初始值。
+
+
+public class MyPointView extends View {
+    private Point mPoint = new Point(100);
+
+    public MyPointView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (mPoint != null){
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(300,300,mPoint.getRadius(),paint);
+        }
+        super.onDraw(canvas);
+    }
+
+    public int getPointRadius(){
+        return 50;
+    }
+
+    public void setPointRadius(int radius){
+        mPoint.setRadius(radius);
+        invalidate();
+    }
+
+}
+
+
+我们在这里添加了getPointRadius函数，返回值是Int有些同学可能会疑惑，我怎么知道这里要返回Int值呢？
+我们前面说过当且当我们再创建ObjectAnimator时，只给他传递了一个过渡值的时候，系统才会调用属性对应的get函数来得到动画的初始值！所以作为动画的初始值
+那么在创建动画时过度值穿什么类型，这里get函数就要返回类型
+
+public static ObjectAnimator ofObject(Object target, String propertyName,TypeEvaluator evaluator, Object... values)
+
+比如上面的ofObject,get函数所返回的类型就是与最后一个参数Obejct ...values,相同类型的。
+在我们在MyPointView 添加上PointRadius所对应的get函数以后重新执行动画；
+
+ObjectAnimator animator = ObjectAnimator.ofInt(mPointView, "pointRadius",100);
+animator.setDuration(2000);
+animator.start();
+
+三、常用函数
+
+有关常用函数这一节其实没有太多讲的必要。因为ObjectAnimator 的函数都是从ValueAnimaton中继承而来，所以用法和效果与ValueAnimstor是完全一样的。
+我们这里只讲解Evaluator的用法，其他的也就不再讲了。
+
+1、使用ArgbEvaluator
+
+我们搜一下TextView所有的函数发现，TextView有一个set函数能够改变背景色：
+public void setBackgroundColor(int color);
+
+
+大家可以回想到，我们在ValueAnimator中也曾改变过背景色，使用的是ArgbEvaluator。在这里我们再回顾下ArgbEvaluator，它的实现代码如下：
+public class ArgbEvaluator implements TypeEvaluator {
+    public Object evaluate(float fraction, Object startValue, Object endValue) {
+        int startInt = (Integer) startValue;
+        int startA = (startInt >> 24);
+        int startR = (startInt >> 16) & 0xff;
+        int startG = (startInt >> 8) & 0xff;
+        int startB = startInt & 0xff;
+
+        int endInt = (Integer) endValue;
+        int endA = (endInt >> 24);
+        int endR = (endInt >> 16) & 0xff;
+        int endG = (endInt >> 8) & 0xff;
+        int endB = endInt & 0xff;
+
+        return (int)((startA + (int)(fraction * (endA - startA))) << 24) |
+                (int)((startR + (int)(fraction * (endR - startR))) << 16) |
+                (int)((startG + (int)(fraction * (endG - startG))) << 8) |
+                (int)((startB + (int)(fraction * (endB - startB))));
+    }
+}
+
+下面我们来看看使用ArgbEvaluator的代码：
+ObjectAnimator animator = ObjectAnimator.ofInt(tv, "BackgroundColor", 0xffff00ff, 0xffffff00, 0xffff00ff);
+animator.setDuration(8000);
+animator.setEvaluator(new ArgbEvaluator());
+animator.start();
+
+
+2、其他函数
+
+下面把其它所涉及到的函数的列表列在下面，大家可以参考ValueAnimator的使用方法来使用。有关自定义插值器和Evaluator的部分
+
+/**
+ * 设置动画时长，单位是毫秒
+ */
+ValueAnimator setDuration(long duration)
+/**
+ * 获取ValueAnimator在运动时，当前运动点的值
+ */
+Object getAnimatedValue();
+/**
+ * 开始动画
+ */
+void start()
+/**
+ * 设置循环次数,设置为INFINITE表示无限循环
+ */
+void setRepeatCount(int value)
+/**
+ * 设置循环模式
+ * value取值有RESTART，REVERSE，
+ */
+void setRepeatMode(int value)
+/**
+ * 取消动画
+ */
+void cancel()
+
+
+（2）、监听器相关
+/**
+ * 监听器一：监听动画变化时的实时值
+ */
+public static interface AnimatorUpdateListener {
+    void onAnimationUpdate(ValueAnimator animation);
+}
+//添加方法为：public void addUpdateListener(AnimatorUpdateListener listener)
+/**
+ * 监听器二：监听动画变化时四个状态
+ */
+public static interface AnimatorListener {
+    void onAnimationStart(Animator animation);
+    void onAnimationEnd(Animator animation);
+    void onAnimationCancel(Animator animation);
+    void onAnimationRepeat(Animator animation);
+}
+//添加方法为：public void addListener(AnimatorListener listener)
+
+（3）、插值器与Evaluator
+
+/**
+ * 设置插值器
+ */
+public void setInterpolator(TimeInterpolator value)
+/**
+ * 设置Evaluator
+ */
+public void setEvaluator(TypeEvaluator value)
+
+
 ---------------------
 作者：启舰
 来源：CSDN
