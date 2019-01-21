@@ -7,9 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.xibei.personaldesign.itemDemo.ActivityAnimation1;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation10;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation11;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation2;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation3;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation4;
@@ -42,7 +44,11 @@ public class MainActivity extends AppCompatActivity {
         lv_title.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(MainActivity.this,beans.get(position).activity.getClass()));
+                if (position<beans.size()){
+                    startActivity(new Intent(MainActivity.this,beans.get(position).activity.getClass()));
+                }else {
+                    Toast.makeText(MainActivity.this,"敬请期待哦...",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -59,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityAnimation7(),"动画 7 ：Value Animator ofObject");
         addData(new ActivityAnimation8(),"动画 8 ：Object Animator");
         addData(new ActivityAnimation9(),"动画 9 ：Object Animator 自定义set方法");
-        addData(new ActivityAnimation10(),"动画 10 ：PropertyValuesHolder 方法");
+        addData(new ActivityAnimation10(),"动画 10 ：PropertyValuesHolder ofint、object和float方法");
+        addData(new ActivityAnimation11(),"动画 11 ：PropertyValuesHolder KeyFrame方法");
     }
 
 

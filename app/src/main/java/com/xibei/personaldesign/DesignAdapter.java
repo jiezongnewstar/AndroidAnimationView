@@ -20,8 +20,9 @@ public class DesignAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return beans.size();
+        return beans.size()+1;
     }
+
 
     @Override
     public Object getItem(int position) {
@@ -45,7 +46,11 @@ public class DesignAdapter extends BaseAdapter {
             holder = (Holder) convertView.getTag();
         }
 
-        holder.tv_title.setText(beans.get(position).title);
+        if (position==beans.size()){
+            holder.tv_title.setText("       正在学习中，未完待续。尽请期待哦...");
+        }else {
+            holder.tv_title.setText(beans.get(position).title);
+        }
 
         return convertView;
     }
