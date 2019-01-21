@@ -1,0 +1,192 @@
+前几篇给大家讲了ValueAnimator、ObjectAnimator的知识，讲解了他们ofInt().ofFloat,ofObject()函数
+的用法。细心的同学可能会注意到，ValueAnimator、ObjectAnimator除了创建Animator实例外，都还有一个方法：
+/**
+ * valueAnimator的
+ */
+public static ValueAnimator ofPropertyValuesHolder(PropertyValuesHolder... values)
+/**
+ * ObjectAnimator的
+ */
+public static ObjectAnimator ofPropertyValuesHolder(Object target,PropertyValuesHolder... values)
+
+也就是说ValueAnimator 和ObjectAnimator除了通过ofInt()、ofFloat()、oFObject()创建实例外，还都有一个
+ofPropertyValuesHolder()方法来创建实例，这篇文章我就带大家来看看如何通过ofPropertyValuesHolder()
+创建实例的。
+由于ValueAnimator和ObjectAnimator都具有ofPropertyValuesHolder()函数，使用方法也差不多，相比而言，
+ValueAnimator的使用机会不多，这里我们就只讲ObjectAnimator和ofPropertyValuesHolder()的用法。相信大家
+懂了这篇以后，再去看ValueAnimator的ofPropertyValuesHolder(),也应该是会用的。
+这篇文章的最后，我们通过本篇内容做了一个电话响铃的效果
+
+一、PropertyValuesHolder
+1、概述
+
+PropertyValuesHolder 这个类的意义就是，它其中保存了动画过程中所需要操作的属性和对应的值。我们
+通过ofFloat(Obejcet target,String propertyName,float ...values)构造动画，ofFloat()内部实现其实
+就是将传进来的参数封装成PropertyValuesHolder实例来保存动画状态。在封装成PropertyValuesHolder实例
+以后，后期的各种操作也是以PropertyValuesHolder为主的。
+说到这里，大家就知道这个PropertyValuesHolder是多有用了吧，上面我们也说了，ObjectAnimator给我们提供
+了一个口子，让我们自己构造PropertyValuesHolder来构造动画。
+
+public static ObjectAnimator ofPropertyValuesHolder(Object target,PropertyValuesHolder... values)
+
+PropertyValuesHolder中有很多函数，有些函数的api等级是11，有些函数的api等级是14和21；
+高api的函数我们就不讲了，只讲讲api11的函数用法。有关各个函数的api等级可以参考google文档，首先，
+我们来看看创建实例的函数：
+public static PropertyValuesHolder ofFloat(String propertyName, float... values)
+public static PropertyValuesHolder ofInt(String propertyName, int... values)
+public static PropertyValuesHolder ofObject(String propertyName, TypeEvaluator evaluator,Object... values)
+public static PropertyValuesHolder ofKeyframe(String propertyName, Keyframe... values)
+
+这里总共有四个创建实例的方法，这一段我们着重讲ofFloat、ofInt和ofObject的用法，ofKeyframe我们单独讲。
+
+2、PropertyValuesHolder之ofFloat()、ofInt()
+
+(1)ofFloat()、ofInt()
+我们先来看看它们的构造函数：
+public static PropertyValuesHolder ofFloat(String propertyName, float... values)
+public static PropertyValuesHolder ofInt(String propertyName, int... values)
+
+其中：
+
+propertyName：表示ObjectAnimator需要操作的属性名。即ObjectAnimator需要通过反射查找对应属性的setProperty()函数的那个property.
+values：属性所对应的参数，同样是可变长参数，可以指定多个，还记得我们在ObjectAnimator中讲过，如果只指定了一个，
+那么ObjectAnimator会通过查找getProperty()方法来获得初始值。不理解的同学请参看《Animation动画详解(七)——ObjectAnimator基本使用》 
+大家看这些参数是不是很眼熟，让我们看一下ObjectAnimator的ofFloat是怎么样的：
+
+public static ObjectAnimator ofFloat(Object target, String propertyName, float... values);
+
+看到没，在ObjectAnimator.ofFloat中只比PropertyValuesHolder的ofFloat多了一个target，其它都是完全一样的！
+好了，我们在讲完PropertyValuesHolder的ofFloat函数以后，我们再来看看如何将构造的PropertyValuesHolder实例设置进ObjectAnimator吧。
+
+（2）、ObjectAnimator.ofPropertyValuesHolder()
+在开篇时，我们也讲了ObjectAnimator给我们提供了一个设置PropertyValuesHolder实例的入口：
+public static ObjectAnimator ofPropertyValuesHolder(Object target,PropertyValuesHolder... values)
+
+其中：
+target：指需要执行动画的控件
+values：是一个可变长参数，可以传进去多个PropertyValuesHolder实例，由于每个PropertyValuesHolder实例都会针对一个属性做动画，
+所以如果传进去多个PropertyValuesHolder实例，将会对控件的多个属性同时做动画操作。 
+（3）、示例
+下面我们就举个例子来如何通过PropertyValuesHolder的ofFloat、ofInt来做动画的。
+这个动画很简单，就是在点击按钮的时候，给textView做动画，框架代码就不再讲了，我们主要来看看操作textview动画的代码。
+动画代码为：
+
+PropertyValuesHolder rotationHolder = PropertyValuesHolder.ofFloat("Rotation", 60f, -60f, 40f, -40f, -20f, 20f, 10f, -10f, 0f);
+PropertyValuesHolder colorHolder = PropertyValuesHolder.ofInt("BackgroundColor", 0xffffffff, 0xffff00ff, 0xffffff00, 0xffffffff);
+ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(mTextView, rotationHolder, colorHolder);
+animator.setDuration(3000);
+animator.setInterpolator(new AccelerateInterpolator());
+animator.start();
+
+在这里，我们创建了两个PropertyValuesHolder实例，第一个rotationHolder：
+PropertyValuesHolder rotationHolder = PropertyValuesHolder.ofFloat("Rotation", 60f, -60f, 40f, -40f, -20f, 20f, 10f, -10f, 0f);
+
+使用ofFloat函数创建，属性值是Rotation，对应的是View类中SetRotation(float rotation)函数。后面传进去很多值，让其左右摆动。
+第二是动画是改变背景色的colorHolder
+
+PropertyValuesHolder colorHolder = PropertyValuesHolder.ofInt("BackgroundColor", 0xffffffff, 0xffff00ff, 0xffffff00, 0xffffffff);
+
+这里使用的是ofInt()函数创建的，它操作的属性是BackgroundColor,对应的是View类中的setBackgroundColor(int color)函数，后面传进去的16
+进制颜色值让其在这些颜色值间变化。有关颜色值的变化，大家可以参考前面的笔记。最后通过ObjectAnimator.ofPropertyValuesHolder将RotationHolder
+、colorHolder设置给mTextView，构造出ObjectAnimator对象。然后开始动画即可
+ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(mTextView, rotationHolder, colorHolder);
+animator.setDuration(3000);
+animator.setInterpolator(new AccelerateInterpolator());
+animator.start();
+
+好了，到这里有关PropertyValuesHolder的ofInt()和ofFloat函数的用法讲完了，大家可以看到PropertyValuesHolder使用起来也很容易，下面我们再来看看
+PropertyValuesHolder的ofObject的使用方法。
+
+3、PropertyValuesHolder之ofObject()
+(1)、概述
+我们先来看一下ofObject的构造函数
+public static PropertyValuesHolder ofObject(String propertyName, TypeEvaluator evaluator,Object... values)
+
+propertyName:ObjectAnimator动画操作的属性名;
+evaluator:Evaluator实例，Evaluator是将当前动画进度计算出当前值的类，可以使用系统自带的IntEvaluator、FloatEvaluator也可以自定义，有关Evaluator的知识，大家可以参考《Animation动画详解(五)——ValueAnimator高级进阶（一）》
+values：可变长参数，表示操作动画属性的值 
+它的各个参数与ObjectAnimator.ofObject的类似,只是少了target参数而已
+
+public static ObjectAnimator ofObject(Object target, String propertyName,TypeEvaluator evaluator, Object... values)
+
+（2）、示例
+下面我们就讲讲PropertyValuesHolder.ofObject()函数的用法
+这里实现的效果与《Animation动画详解(六)——ValueAnimator高级进阶（二）》实现的效果相同，即通过自字义的CharEvaluator来自动实现字母的改变与计算。
+首先是自定义一个CharEvaluator,通过进度值来自动计算出当前的字母：
+public class CharEvaluator implements TypeEvaluator<Character> {
+    @Override
+    public Character evaluate(float fraction, Character startValue, Character endValue) {
+        int startInt  = (int)startValue;
+        int endInt = (int)endValue;
+        int curInt = (int)(startInt + fraction *(endInt - startInt));
+        char result = (char)curInt;
+        return result;
+    }
+}
+
+
+有关数字与字符间转换的原理已经在《Animation动画详解(六)——ValueAnimator高级进阶（二）》讲述，就不再细讲。
+这个CharEvaluator也是直接从这篇文章中拿过来的，强烈建议大家对这个系列文章从头开始看。
+从CharEvaluator中可以看出，从CharEvaluator中产出的动画中间值类型为Character类型。TextView中虽然有setText(CharSequence text) 函数，
+但这个函数的参数类型是CharSequence，而不是Character类型。所以我们要自定义一个类派生自TextView来改变TextView的字符
+public class MyTextView extends TextView {
+    public MyTextView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+    public void setCharText(Character character){
+        setText(String.valueOf(character));
+    }
+}
+
+在这里，我们定义了一个方法setCharText(Character character)，参数就是Character类型，我们知道这个方法所对应的属性是CharText；
+最后MyActivity,在点击按钮的时候开始动画，核心代码为：
+public class MyActivity extends Activity {
+    private Button btn;
+    private TextView mTextView;
+    private MyTextView mMyTv;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        mMyTv = (MyTextView)findViewById(R.id.mytv);
+        btn = (Button) findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doOfObjectAnim();
+            }
+        });
+    }
+
+    private void doOfObjectAnim(){
+        PropertyValuesHolder charHolder = PropertyValuesHolder.ofObject("CharText",new CharEvaluator(),new Character('A'),new Character('Z'));
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(mMyTv, charHolder);
+        animator.setDuration(3000);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.start();
+    }
+}
+
+
+这部分代码，很好理解，在点击按钮的时候执行doOfObjectAnim()方法：
+PropertyValuesHolder charHolder = PropertyValuesHolder.ofObject("CharText",new CharEvaluator(),new Character('A'),new Character('Z'));
+ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(mMyTv, charHolder);
+animator.setDuration(3000);
+animator.setInterpolator(new AccelerateInterpolator());
+animator.start();
+
+首先是根据PropertyValuesHolder.ofObject生成一个PropertyValuesHolder实例，注意它的属性就是CharText，所对应的set函数就是setCharText,
+由于CharEvaluator的中间值是Character类型，所以CharText属性所对应的完整的函数声明为setCharText(Character character)；
+这也就是我们为什么要自定义一个MyTextView原因，就是因为TextView中没有setText(Character character)这样的函数。
+然后就是利用ObjectAnimator.ofPropertyValuesHolder生成ObjectAnimator实例了，最后就是对animator设置并start了，没什么难度，就不再讲了。
+
+
+
+
+---------------------
+作者：启舰
+来源：CSDN
+原文：https://blog.csdn.net/harvic880925/article/details/50752838
+版权声明：本文为博主原创文章，转载请附上博文链接！
+

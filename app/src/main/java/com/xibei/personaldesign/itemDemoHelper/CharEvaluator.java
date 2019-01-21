@@ -2,7 +2,7 @@ package com.xibei.personaldesign.itemDemoHelper;
 
 import android.animation.TypeEvaluator;
 
-/*
+/**
 A~Z转换
  */
 public class CharEvaluator implements TypeEvaluator<Character> {

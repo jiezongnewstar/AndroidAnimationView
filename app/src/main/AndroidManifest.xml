@@ -48,6 +48,8 @@
         android:screenOrientation="portrait" />
         <activity android:name=".itemDemo.ActivityAnimation9"
         android:screenOrientation="portrait" />
+        <activity android:name=".itemDemo.ActivityAnimation10"
+            android:screenOrientation="portrait" />
 
     </application>
 
