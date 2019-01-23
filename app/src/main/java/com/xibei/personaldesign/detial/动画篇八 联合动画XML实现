@@ -1,0 +1,337 @@
+    上篇讲了有关AnimatorSet的代码实现方法，这篇我们就来分别看看如何利用xml来实现ValueAnimator、ObjectAnimator和AnimatorSet；
+最后我们将利用Animator 来实现一个路径动画。
+
+一、联合动画的XML实现
+
+在xml中对应animator总共有三个标签，分别是
+<animator/> 对应BalueAnimator
+<objectAnimator/> 对应ObjectAnimator
+<set/> 对应AnimatorSet
+
+下面逐个来看各个标签的用法
+
+1、animator
+（1）、animator所有字段及意义
+
+下面是完整的animator所有的字段及取值范围：
+
+<animator
+    android:duration = "int"
+    android:valueFrom = "float | int | color"
+    android:valueTo = "float | int | color"
+    android:startOffset = "int"
+    android:repeatCount = "int"
+    adnroid:repeatMode = ["repeat"|reverse]
+    android:valueType = ["intType"|"floatType"]
+    android:interpolator = [@android:interpolator/XXX]/>
+
+    ·android：duration ：每次动画播放的时长
+    ·android：valueFrome ：初始动画值；取值范围为float，int和color，如果取值为float对应的样式应该为89.0，
+                           取值为int时，对应的值样式为：89；当取值为color时，对应的值样式为#333333；
+    ·android：valueTo :动画结束值，取值范围和valueFrom相同
+    ·android:startOffset:动画激活延时；对应代码中的startDelay(long delay)函数；
+    ·android:repeatCount:动画重复次数
+    ·android:repeatMode:动画重复模式，取值为repeat和reverse；repeat表示正序重播，reverse表示倒序重播
+    ·android:valueType:表示参数值类型，取值为intType和floatType；与android：valueFrome、android：valueTo相对应。
+                        如果这里的取值为intType，那么android：valueFrom、android：valueTo的值也要对应是int类型的数值。
+                        如果这里的数值时floatType，那么android：valueFrom、android:valueTo的值也要对应的是float类型的数值。
+                        非常注意的是，如果android：valueFrom、android：valueTo的值设为color类型的值，那么不需要设置这个参数。
+    ·android:interpolator 设置加速器；有关系统加速器所对应的xml值对照表如下：
+
+    --------------------------------------------------------------------------------------------------------
+    | interpolator class                      |                 Resource ID                                |
+    --------------------------------------------------------------------------------------------------------
+    | AccelerateDecelerateInterpolator        |  @android:anim/accelerate_decelerate_interpolator          |
+    --------------------------------------------------------------------------------------------------------
+    | AccelerateInterpolator                  |  @android:anim/accelerate_interpolator                     |
+    --------------------------------------------------------------------------------------------------------
+    | AnticipateInterpolator                  |  @android:anim/anticipate_interpolator                     |
+    --------------------------------------------------------------------------------------------------------
+    | AntivipateOvershootInterpolator         |  @android:anim/anticipate_overshoot_interpolator           |
+    --------------------------------------------------------------------------------------------------------
+    | BounceInterpolator                      |  @android:anim/bounce_interpolator                         |
+    --------------------------------------------------------------------------------------------------------
+    | CycleInterpolator                       |  @android:anim/cycle_interpolator                          |
+    --------------------------------------------------------------------------------------------------------
+    | DecelerateInterpolator                  |  @android:anim/decelerate_interpolator                     |
+    --------------------------------------------------------------------------------------------------------
+    | LinearInterpolator                      |  @android:anim/linear_interpolator                         |
+    --------------------------------------------------------------------------------------------------------
+    | OvershootInterpolator                   |  @android:anim/overshoot_interpolator                      |
+    --------------------------------------------------------------------------------------------------------
+
+(2)、将xml加载到程序中
+
+    在定义了一个xml后，我们需要将其加载到程序中，使用的方法如下：
+    ValueAnimator valueAnimator = (ValueAnimator) AnimatorInflater.loadAnimator(MyActivity.this,R.animator.animator);
+    valueAnimator.start();
+
+    通过loadAnimator将animator动画xml文件，加载进来，根据类型进行强转。
+
+(3)、简单实例
+    下面我们就举个例子来看看如何来使用xml生成对应的animator动画
+    我们生成了一个动画，动态来改变当前控件的坐标位置。
+    我们现在res/animator文件夹生成一个动画的xml文件：
+    <?xml version="1.0" encoding="utf-8"?>
+    <animator xmlns:android="http://schemas.android.com/apk/res/android"
+              android:valueFrom="0"
+              android:valueTo="300"
+              android:duration="1000"
+              android:valueType="intType"
+              android:interpolator="@android:anim/bounce_interpolator"/>
+
+    在这里，我们将valueType设置为intType，所以对应的android:valueFrom、android:valueTo都必须是int类型的值；
+    改插值器使用bounce回弹插值器
+    然后再来看看加载到程序中过程：
+
+    ValueAnimator valueAnimator = (ValueAnimator) AnimatorInflater.loadAnimator(MyActivity.this,
+           R.animator.animator);
+    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+       @Override
+       public void onAnimationUpdate(ValueAnimator animation) {
+           int offset = (int)animation.getAnimatedValue();
+           mTv1.layout( offset,offset,mTv1.getWidth()+offset,mTv1.getHeight() + offset);
+       }
+    });
+    valueAnimator.start();
+
+    由于我们xml中根属性是<animator/>所以它对应的是ValueAnimator，所以在加载后，将其强转为valueAnimator；
+    然后对其添加控件监听。在监听时，动态改变当前textview的位置。
+
+    2、objectAnimator
+    (1)字段意义及使用方法
+    同样，我们先来看看它的所有标签的意义：
+
+    <objectAnimator
+        android:propertyName="string"
+        android:duration="int"
+        android:valueFrom="float | int | color"
+        android:valueTo="float | int | color"
+        android:startOffset="int"
+        android:repeatCount="int"
+        android:repeatMode=["repeat" | "reverse"]
+        android:valueType=["intType" | "floatType"]
+        android:interpolator=["@android:interpolator/XXX"]/>
+
+    -android:propertyName: 对应属性名，即ObjectAnimator 所需要操作的属性名
+    其他字段的意义与animator的意义与取值是一样的，这里不再赘述。
+
+    下面我们来看一下如何使用：
+
+    ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MyActivity.this,
+            R.animator.object_animator);
+    animator.setTarget(mTv1);
+    animator.start();
+
+    同样是使用loadAnimator加载对应的xml动画。然后使用animator.setTarget(mTv1),绑定上动画目标。因为
+    在xml中，没有设置目标参数，所以我们必须通过代码将目标控件与动画绑定。
+
+    (2)、使用示例
+    我们先写一个动画xml：
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:propertyName="TranslationY"
+                    android:duration="2000"
+                    android:valueFrom="0.0"
+                    android:valueTo="400.0"
+                    android:interpolator="@android:anim/accelerate_interpolator"
+                    android:valueType="floatType"
+                    android:repeatCount="1"
+                    android:repeatMode="reverse"
+                    android:startOffset="2000"/>
+
+    在这个xml中，我们定义了更改属性为TranslationY，即改变纵坐标，时长为2000毫秒。从0变到400；
+    使用的插值器是加速插值器，对应的值类型为float。
+    有些同学可能会问，为什么是float尅性，因为setTranslationY函数的参数是float类型的，声明如下：
+
+    public void setTranslationY(float translationY)
+
+    最后设置重复次数和重复模式。将动画激活延时设置为2000毫秒；
+    然后是加载动画：
+
+    ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MyActivity.this,
+            R.animator.object_animator);
+    animator.setTarget(mTv1);
+    animator.start();
+
+    (3)、使用color属性示例
+
+    这里我们就演示一下如何使用android:valueFrom、android:valueTo 属性用法：
+    我们建立一个objectAnimator的动画文件：
+    <?xml version="1.0" encoding="utf-8"?>
+    <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:propertyName="BackgroundColor"
+                    android:duration="5000"
+                    android:valueFrom="#ffff00ff"
+                    android:valueTo="#ffffff00"/>
+
+    设置属性名为BackgroundColor，即对应的set函数为setBackgroundColor(int color);
+    android:valueFrom 和 android:valueTo 的取值都为颜色值，即#开头的八位数值；即ARGB值；
+
+    使用方法不变：
+
+    ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MyActivity.this,
+            R.animator.color_animator);
+    animator.setTarget(mTv1);
+    animator.start();
+
+    从效果途中可以看到，虽然实现了颜色变化，但会一直闪；所以直接利用xml实现的动画效果并不怎么好，所以如果想要实现颜色变化，还是利用代码来实现吧。
+    3、set
+    (1)字段意义及使用方法
+    这个是AnimatorSet对应的标签。它只有一个属性
+    <set
+      android:ordering=["together" | "sequentially"]>
+
+    android:ordering:表示动画开始顺序。together表示同事开始动画，sequentially表示逐个开始动画；
+    加载方式为：
+
+    AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(MyActivity.this,
+            R.animator.set_animator);
+    set.setTarget(mTv1);
+    set.start();
+
+    同样是通过loadAnimator加载动画，然后将其强转为AnimatorSet
+
+    (2)、示例
+    在res/animator文件夹下创建一个文件(set_animator.xml):
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <set xmlns:android="http://schemas.android.com/apk/res/android"
+         android:ordering="together">
+        <objectAnimator
+                android:propertyName="x"
+                android:duration="500"
+                android:valueFrom="0"
+                android:valueTo="400"
+                android:valueType="floatType"/>
+        <objectAnimator
+                android:propertyName="y"
+                android:duration="500"
+                android:valueFrom="0"
+                android:valueTo="300"
+                android:valueType="floatType"/>
+    </set>
+
+
+    这里有两个objectAnimator动画，一个改变值x坐标，一个改变值y坐标，取值分别为0~400和0~300；
+    然后坐在代码中加载：
+
+    AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(MyActivity.this,
+            R.animator.set_animator);
+    set.setTarget(mTv1);
+    set.start();
+
+    4、总结
+    最后总结一下，所有animator标签及取值范围如下：
+
+    <set
+      android:ordering=["together" | "sequentially"]>
+
+        <objectAnimator
+            android:propertyName="string"
+            android:duration="int"
+            android:valueFrom="float | int | color"
+            android:valueTo="float | int | color"
+            android:startOffset="int"
+            android:repeatCount="int"
+            android:repeatMode=["repeat" | "reverse"]
+            android:valueType=["intType" | "floatType"]/>
+
+        <animator
+            android:duration="int"
+            android:valueFrom="float | int | color"
+            android:valueTo="float | int | color"
+            android:startOffset="int"
+            android:repeatCount="int"
+            android:repeatMode=["repeat" | "reverse"]
+            android:valueType=["intType" | "floatType"]/>
+
+        <set>
+            ...
+        </set>
+    </set>
+
+    各字段的取值意义在上面讲解时已经给出，大家可以翻回去看看。
+
+    二、 示例 ——————AnimatorSet应用
+
+    散开的效果分析:
+
+    我们先来分析一下这个效果，在用户点击按钮时，把菜单弹出来，弹出来的时候，动画一点从小变大，一边透明度
+    从0变成1，关键问题是，怎么实现各个菜单以当前点击按钮为圆心排列在圆形上；
+
+    1、原理
+
+    在开始写代码之前，我们先讲讲，如何根据园半径来定位每个图片的位置，
+
+    x=radius*sin(a)
+    y=radius+cos(a)
+
+    在上面的图形中，我们可以清晰的看到，假如当前菜单与Y轴的夹角是a°，那么这个菜单所移动的X轴距离为radius*sin*(a)
+    Y轴的移动距离为radius*cos(a);
+
+    这是非常简单的三角函数的计。想必这块大家理解起来是没有问题的。
+
+    那么第一个问题来了，这个夹角a是多少度呢？
+    很显然，这里所有菜单的夹角只和是90°，我们总共有5个菜单，把90°夹角做了4等分。所以夹角a的度数为90/4=22，
+    所以这五个菜单，第一个菜单的夹角是0度，第二个菜单的夹角是22度，第三个菜单的夹角是22*2,第四个夹角是22*3，
+    第五个夹角是22*3第五个夹角是22*4
+    我们假设index表示当前菜单的位置索引，从0开始，即第一个菜单的索引是0，第二个菜单的索引是1，第三个菜单的索引是2 。。。
+    而当前的菜单与y轴的夹角敲好占了22度的index份，所以当前菜单与Y轴夹角为22*index，这个公式非常重要，
+    大家在这里一定要理解，下面代码会用到。
+    第二个问题来了，如何求对应角度的sin，cos值
+    想必很多同学都知道，java中有一个Math类，它其中有四个函数：
+    /**
+     * 求对应弧度的正弦值
+     */
+    double sin(double d)
+    /**
+     * 求对应弧度的余弦值
+     */
+    double cos(double d)
+    /**
+     * 求对应弧度的正切值
+     */
+    double tan(double d)
+
+    这里要非常注意的是，这三个函数的输入参数不是度数，而是对应度数的弧度值！
+    角度与其对应的弧度值对应关系如下：
+
+    在Math中有两种党阀可以得到弧度值：
+    第一种方法：在Math中，Math.PI不仅代表圆周率π，也代表180度角所对应的弧度值。座椅Math.sin(Math.PI)就
+    表示180度的正弦值，Math.sin(Math.PI/2)就表示90度的正弦值。
+
+    第二种方法：根据度数活的弧度值
+    在Math中也提供了一个方法
+    /**
+     * Math中根据度数得到弧度值的函数
+     */
+    double toRadians(double angdeg)
+
+    这个函数就是Math根据度数得到弧度值的函数，参数angdeg指度数，返回值是对应的弧度值。
+    所以比如我们要求22度对应的弧度值，就是Math.toRaidans(22)；所以我们要求22度对应的正弦值就是：
+    Math.sin(Math.toRadians(22))
+    在讲解了如何根据半径求得每个菜单的位置之后，我们来看看实例工程代码。
+
+
+
+
+
+
+
+
+
+
+
+    ---------------------
+    作者：启舰
+    来源：CSDN
+    原文：https://blog.csdn.net/harvic880925/article/details/50763286
+    版权声明：本文为博主原创文章，转载请附上博文链接！
+
+
+
+
+
+
