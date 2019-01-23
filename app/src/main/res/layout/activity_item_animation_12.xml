@@ -3,6 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:text="红色Button为Builder用法，
+all表示所有类目都执行，
+_表示同时执行，
+.表示按顺序执行"/>
 ·
     <TextView
         android:layout_marginTop="100dp"
@@ -40,24 +49,192 @@
         <LinearLayout
 
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
 
             <Button
                 android:id="@+id/btn_01"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="playSequentially" />
+                android:text="playSequentially"
+                android:textSize="8sp"/>
 
             <Button
                 android:id="@+id/btn_02"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="playTogether" />
+                android:text="playTogether"
+                android:textSize="8sp"/>
 
         </LinearLayout>
 
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv1:bg"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_04"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv1:bg_scalx"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_05"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="tv1:bg_scalX_translationY"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv2:bg"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_07"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv2:bg_scalx"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_08"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv2:bg_scalX_translationY"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_09"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv1.tv2"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv2.tv1"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv1_tv2"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+        </LinearLayout>
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_12"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="tv1:bg.scalX.translationY"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_13"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="tv1:translationY.scalX.bg"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv2:bg.scalX.translationY"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+            <Button
+                android:layout_margin="1dp"
+                android:id="@+id/btn_15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tv2:translationY.scalX.bg"
+                android:textSize="8sp"
+                android:background="@android:color/holo_red_light"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_margin="1dp"
+            android:id="@+id/btn_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tv1:translationY.scalX.bg.tv2:translationY.scalX.bg"
+            android:textSize="8sp"
+            android:background="@android:color/holo_red_light"/>
 
     </LinearLayout>
 
