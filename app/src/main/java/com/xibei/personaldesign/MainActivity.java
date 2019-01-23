@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation1;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation10;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation11;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation12;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation2;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation3;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation4;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityAnimation9(),"动画 9 ：Object Animator 自定义set方法");
         addData(new ActivityAnimation10(),"动画 10 ：PropertyValuesHolder ofint、object和float方法");
         addData(new ActivityAnimation11(),"动画 11 ：PropertyValuesHolder KeyFrame方法");
+        addData(new ActivityAnimation12(),"动画 12 ：联合动画");
     }
 
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xibei.personaldesign">
-
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -51,6 +50,8 @@
         <activity android:name=".itemDemo.ActivityAnimation10"
             android:screenOrientation="portrait" />
         <activity android:name=".itemDemo.ActivityAnimation11"
+            android:screenOrientation="portrait" />
+        <activity android:name=".itemDemo.ActivityAnimation12"
             android:screenOrientation="portrait" />
 
 
