@@ -1,0 +1,295 @@
+    前几篇给大家讲述了如何针对一个控件应用动画，这篇给大家讲解如何给容器的控件应用统一动画。即在容器中控件出现时，不必每个控件添加动画，
+可以在容器中为其添加统一的进入退出动画。
+    这次的示例，是listview中的数据在进入时就加入统一动画，下面我们来看一下是怎么实现的吧。
+
+    这篇我们将讲述有关普通viewgroup添加进入统一动画LayoutAnimation和针对girdView添加进入动画的gridLayoutAnimation；
+LayoutAnimation和girdLayoutAnimation 在API 中就有函数。所以大家不必担心他们的所有能使用的api等级；也正因为他们是在API中1就引入了，
+所以他们也只能使用animation来做动画，而不能使用animator。
+
+    一、LayoutAnimation的xml实现 ————layoutAnimation标签
+    1.概述
+    这部分，我们就来看看layoutAnimation标签用法，要使用layoutAnimation只需要两步：
+    第一步：定义一个layoutAnimation的animation文件，如（anim、layout——animation.xml）
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:delay="1"
+                     android:animationOrder="normal"
+                     android:animation="@anim/slide_in_left"/>
+
+    有关它的具体意义，我们后面会讲。
+    第二步：在viewGroup类的控件中，添加android:layoutAnimation = "@anim/layout_animation"，如：
+    <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layout_animation"
+            />
+    2.示例
+    这部分，我们将实现效果、、、、、、、、、、、、
+
+    从效果中，可以看出两点
+    -listview中各个item从左至右滑入位置
+    -动画仅在第一次创建时有用，后期加入的数据，将不会再有动画(这个问题最后再讲)
+
+    这里添加的layoutAnimation，与上面的layout_animation.xml文件一样；
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:delay="1"
+                     android:animationOrder="normal"
+                     android:animation="@anim/slide_in_left"/>
+
+    其中的@anim/slide_in_left对应代码为：
+    <?xml version="1.0" encoding="utf-8"?>
+    <set xmlns:android="http://schemas.android.com/apk/res/android" android:duration="1000">
+        <translate android:fromXDelta="-50%p" android:toXDelta="0"/>
+        <alpha android:fromAlpha="0.0" android:toAlpha="1.0"/>
+    </set>
+
+
+    这部分实现的效果是，让控件从左边50%的位置进入屏幕，同时透明度从0变到1；动画总时长为1000毫秒。
+    然后看main.xml的布局代码，根据效果图中也很容易看出布局代码：
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="刷新list"/>
+
+        <ListView
+                android:id="@+id/listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutAnimation="@anim/layout_animation"/>
+    </LinearLayout>
+
+    这里重要的是，在listview中添加上android:layoutAnimation = "@anim/layout_animation"来指定创建布局时，其中的子item所使用的动画。
+    最后是MyActivity中填充ListView的代码
+
+    public class MyActivity extends Activity {
+
+        private ListView mListView;
+        private ArrayAdapter mAdapter;
+        private Button mAddListBtn;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.main);
+
+            mListView = (ListView) findViewById(R.id.listview);
+            mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getData());
+            mListView.setAdapter(mAdapter);
+
+            mAddListBtn = (Button)findViewById(R.id.addlist);
+            mAddListBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAdapter.addAll(getData());
+                }
+            });
+        }
+
+        private List<String> getData() {
+            List<String> data = new ArrayList<String>();
+            data.add("测试数据1");
+            data.add("测试数据2");
+            data.add("测试数据3");
+            data.add("测试数据4");
+
+            return data;
+        }
+    }
+
+    这段代码理解起来难度不大，主要就是两个点，第一，填充listview，第二个在点击添加list数据按钮时，向listview添加新的数据。
+    通过这个例子，我们可以知道最重要的一点：android:layoutAnimation 只在viewgroup创建的时候，才会对其中的item添加动画。
+    创建成功以后，再向其中添加item将不会再有动画。
+    我们可以看出，只需要在viewGroup控件中添加android:androidAnimation="@anim/layout_animation",就可以实现其容器内部控件创建时的动画。
+
+    3、layoutAnimation各字段的意义
+    上面我们将了layoutAnimation的使用方法，下面我们就来看看layoutAnimation标签各个字段的意义。
+    在layoutAnimation中，只有三个字段是有效的，分别是：android:delay、android:animationOrder和andorid:animation；
+    其它诸如android:duration、android:interpolator等针对animation字段都是无效的。下面我们结合上面的layoutAnimation代码，
+    来看一下各个字段的意义：
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:delay="1"
+                     android:animationOrder="normal"
+                     android:animation="@anim/slide_in_left"/>
+    -delay ：指每个item的动画开始延时，取值是android:animation所指定动画时长的倍数，取值类型可以是float类型，也可以是百分数，默认
+             是0.5;比如我们这里指定的动画时@anim/slide_in_left，而在slide_in_left.xml中指定的android:duration="1000",即单次动画
+             的时长是1000毫秒，而我们再这里指定android:delay="1",即一个item的动画会在上一个item动画完成后延时单词动画时长的一倍时间开始
+             ，即延迟1000毫秒后开始。
+    -animationOrder : 指viewGroup中的控件动画开始顺序，取值有normal（正序）、reverse（倒序）、random（随机）
+    -animation：指定每个item进入场所要应用的动画。仅能指定res/anim文件夹中的animation定义的动画，不可使用animator动画
+
+    这里最难理解的参数应该是android：delay，它是指viewGroup中各个item开始动画的时间延迟，取值是item动画时长的倍数。其中item动画是通过
+    android:animation指定的。
+    其次就是animationOrder的三种次序，其实也没什么难度，我们就直接通过动画看看他们的区别吧。上面的效果图中，我们演示的normal（正序）
+    下面我们再来看看reverse和random的效果：
+
+    、、、、、、、、、、、、、、
+
+    二、LayoutAnimation的代码实现 ————LayoutAnimationController
+    1.概述
+    上面我们讲过了LayoutAnimation的xml实现方式，下面我们看看LayoutAnimation的代码实现方式。
+    首先，xml中layoutAnimation标签对应的类为LayoutAnimationController；它有两个构造函数；
+    public LayoutAnimationController(Animation animation)
+    public LayoutAnimationController(Animation animation, float delay)
+
+    很容易理解，animation对应的标签中的android:animation属性，delay对应标签中的android:delay属性。
+    LayoutAnimationController的函数如下：
+
+    /**
+     * 设置animation动画
+     */
+    public void setAnimation(Animation animation)
+    /**
+     * 设置单个item开始动画延时
+     */
+    public void setDelay(float delay)
+    /**
+     * 设置viewGroup中控件开始动画顺序，取值为ORDER_NORMAL、ORDER_REVERSE、ORDER_RANDOM
+     */
+    public void setOrder(int order)
+
+  这函数都很容易理解，与xml中标签的意义完全相同。下面我们就来看看使用方法。
+
+  2、示例
+  同样以上面的例子为例，把xml实现改成代码实现。由于我们要代码实现layoutAnimation，所以我们不再需要写layoutAnimation的xml了，只需一个
+  动画的animation:slide_in_left
+
+  <?xml version="1.0" encoding="utf-8"?>
+  <set xmlns:android="http://schemas.android.com/apk/res/android" android:duration="1000">
+      <translate android:fromXDelta="-50%p" android:toXDelta="0"/>
+      <alpha android:fromAlpha="0.0" android:toAlpha="1.0"/>
+  </set>
+
+  然后是主布局（main.xml）
+  <?xml version="1.0" encoding="utf-8"?>
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+      <Button
+              android:id="@+id/addlist"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="添加list数据"/>
+
+      <ListView
+              android:id="@+id/listview"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+  </LinearLayout>
+
+  布局与xml的实现方式一样，唯一不同的是listview中没有定义android:layoutAnimation="@anim/layout_animation"属性，因为所有有关LayoutAnimation
+  的部分都是利用代码来实现的。
+  最后我们来看看代码(MyActivity)
+
+  public class MyActivity extends Activity {
+
+      private ListView mListView;
+      private ArrayAdapter mAdapter;
+
+      private Button mAddListBtn;
+
+      @Override
+      public void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.main);
+
+          mListView = (ListView) findViewById(R.id.listview);
+          mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getData());
+          mListView.setAdapter(mAdapter);
+
+          mAddListBtn = (Button)findViewById(R.id.addlist);
+          mAddListBtn.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                  mAdapter.addAll(getData());
+              }
+          });
+
+
+          //代码设置通过加载XML动画设置文件来创建一个Animation对象；
+          Animation animation= AnimationUtils.loadAnimation(this,R.anim.slide_in_left);   //得到一个LayoutAnimationController对象；
+          LayoutAnimationController controller = new LayoutAnimationController(animation);   //设置控件显示的顺序；
+          controller.setOrder(LayoutAnimationController.ORDER_REVERSE);   //设置控件显示间隔时间；
+          controller.setDelay(0.3f);   //为ListView设置LayoutAnimationController属性；
+          mListView.setLayoutAnimation(controller);
+          mListView.startLayoutAnimation();
+      }
+
+      private List<String> getData() {
+
+          List<String> data = new ArrayList<String>();
+          data.add("测试数据1");
+          data.add("测试数据2");
+          data.add("测试数据3");
+          data.add("测试数据4");
+
+          return data;
+      }
+  }
+
+    这段代码中，在填充listview的代码都是与xml的实现方式相同的，关键是填充后，开始给listview设置layoutAnimationController，代码如下：
+
+    Animation animation= AnimationUtils.loadAnimation(this,R.anim.slide_in_left);
+    //得到一个LayoutAnimationController对象；
+    LayoutAnimationController controller = new LayoutAnimationController(animation);   //设置控件显示的顺序；
+    controller.setOrder(LayoutAnimationController.ORDER_REVERSE);
+    //设置控件显示间隔时间；
+    controller.setDelay(0.3f);
+    //为ListView设置LayoutAnimationController属性；
+    mListView.setLayoutAnimation(controller);
+    mListView.startLayoutAnimation();
+
+  这段代码就是构造LayoutAnimationController变量，然后利用setLayoutAnimation将其设置给listview，最后利用mListview.startLayoutAnimation();
+  快开始动画；难度不大，看一下就明白。
+
+  效果与上部分xml实现一样
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---------------------
+    作者：启舰
+    来源：CSDN
+    原文：https://blog.csdn.net/harvic880925/article/details/50785786
+    版权声明：本文为博主原创文章，转载请附上博文链接！

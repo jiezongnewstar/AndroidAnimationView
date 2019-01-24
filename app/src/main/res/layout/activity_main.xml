@@ -10,6 +10,7 @@
         android:id="@+id/lv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:text="Hello World!"
+        android:layoutAnimation="@anim/main_list_layout_animation"/>
 
 </android.support.constraint.ConstraintLayout>
