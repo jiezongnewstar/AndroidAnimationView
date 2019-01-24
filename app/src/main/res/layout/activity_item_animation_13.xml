@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_circle1"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/circle_1"/>
+
+    <ImageView
+        android:id="@+id/iv_circle2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/circle_2"/>
+
+    <ImageView
+        android:id="@+id/iv_circle3"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/circle_3"/>
+
+    <ImageView
+        android:id="@+id/iv_circle4"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/circle_4"/>
+
+    <ImageView
+        android:id="@+id/iv_circle5"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/circle_5"/>
+
+
+    <ImageView
+        android:id="@+id/iv_main"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@mipmap/circle_main"/>
+
+
+
+
+</RelativeLayout>
+
