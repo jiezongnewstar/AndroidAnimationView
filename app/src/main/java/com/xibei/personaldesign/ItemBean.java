@@ -8,4 +8,7 @@ public class ItemBean {
 
     public Activity activity;
 
+    public ItemBean(String title) {
+        this.title = title;
+    }
 }

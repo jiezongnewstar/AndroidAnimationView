@@ -1,6 +1,5 @@
 package com.xibei.personaldesign.itemDemo;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
