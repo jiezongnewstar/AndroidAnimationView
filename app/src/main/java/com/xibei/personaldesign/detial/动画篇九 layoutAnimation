@@ -259,6 +259,610 @@ LayoutAnimation和girdLayoutAnimation 在API 中就有函数。所以大家不�
 
   效果与上部分xml实现一样
 
+  二、LayoutAnimation 的代码实现 ——————LayoutAnimationController
+  1、概述
+  上面我们讲过了LayoutAnimation的xml实现方式，下面来看看LayoutAnimation的代码实现方式。
+  首先，xml中的layoutAnimation标签对应的类为LayooutAinmationController；它有两个构造函数：
+
+  public LayoutAnimationController(Animation animation)
+  public LayoutAnimationController(Animation animation, float delay)
+
+  很容易理解，animation对应标签中的android:animation属性，delay对应标签中的android:delay属性。
+  LayoutAniamtionController的函数如下：
+
+  /**
+   * 设置animation动画
+   */
+  public void setAnimation(Animation animation)
+  /**
+   * 设置单个item开始动画延时
+   */
+  public void setDelay(float delay)
+  /**
+   * 设置viewGroup中控件开始动画顺序，取值为ORDER_NORMAL、ORDER_REVERSE、ORDER_RANDOM
+   */
+  public void setOrder(int order)
+
+  这些函数都很容易理解，与xml中标签的意义完全相同。下面我们就来看看使用方法。
+
+  2、示例
+  同样以上面的例子为例，把xml实现改成代码实现。由于我们要代码实现layoutAnimation，所以我们不在需要写layoutAnimation的xml了，
+  只需要一个动画animation：(slide_in_left.xml)
+
+  <?xml version="1.0" encoding="utf-8"?>
+  <set xmlns:android="http://schemas.android.com/apk/res/android" android:duration="1000">
+      <translate android:fromXDelta="-50%p" android:toXDelta="0"/>
+      <alpha android:fromAlpha="0.0" android:toAlpha="1.0"/>
+  </set>
+
+  然后是主布局(main.xml)
+
+  <?xml version="1.0" encoding="utf-8"?>
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+      <Button
+              android:id="@+id/addlist"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="添加list数据"/>
+
+      <ListView
+              android:id="@+id/listview"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+  </LinearLayout>
+
+  布局与xml的实现方式一样，唯一不同的是listview中没有定义android:layoutAnimation="@anim/layout_animation"属性，因为所有有关LayoutAnimation
+  的部分都是利用代码实现的；
+
+  最后我们来看看代码(MyActivity.java)
+
+  public class MyActivity extends Activity {
+
+      private ListView mListView;
+      private ArrayAdapter mAdapter;
+
+      private Button mAddListBtn;
+
+      @Override
+      public void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.main);
+
+          mListView = (ListView) findViewById(R.id.listview);
+          mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getData());
+          mListView.setAdapter(mAdapter);
+
+          mAddListBtn = (Button)findViewById(R.id.addlist);
+          mAddListBtn.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                  mAdapter.addAll(getData());
+              }
+          });
+
+
+          //代码设置通过加载XML动画设置文件来创建一个Animation对象；
+          Animation animation= AnimationUtils.loadAnimation(this,R.anim.slide_in_left);   //得到一个LayoutAnimationController对象；
+          LayoutAnimationController controller = new LayoutAnimationController(animation);   //设置控件显示的顺序；
+          controller.setOrder(LayoutAnimationController.ORDER_REVERSE);   //设置控件显示间隔时间；
+          controller.setDelay(0.3f);   //为ListView设置LayoutAnimationController属性；
+          mListView.setLayoutAnimation(controller);
+          mListView.startLayoutAnimation();
+      }
+
+      private List<String> getData() {
+
+          List<String> data = new ArrayList<String>();
+          data.add("测试数据1");
+          data.add("测试数据2");
+          data.add("测试数据3");
+          data.add("测试数据4");
+
+          return data;
+      }
+  }
+
+  这段代码中，在填充listview的代码都是与xml的实现方式相同的，关键是填充后，开始给listview设置LayoutAnimationController，代码如下：
+
+  Animation animation= AnimationUtils.loadAnimation(this,R.anim.slide_in_left);
+  //得到一个LayoutAnimationController对象；
+  LayoutAnimationController controller = new LayoutAnimationController(animation);   //设置控件显示的顺序；
+  controller.setOrder(LayoutAnimationController.ORDER_REVERSE);
+  //设置控件显示间隔时间；
+  controller.setDelay(0.3f);
+  //为ListView设置LayoutAnimationController属性；
+  mListView.setLayoutAnimation(controller);
+  mListView.startLayoutAnimation();
+
+  这段代码就是构造LayoutAnimationController变量，然后利用setLayoutAnimation将其设置为listview，最后利用mListview.startLayoutAnimation();
+  开始动画
+
+  三、GridLayoutAnimation的XML实现 ——————gridLayoutAnimation
+
+  1、概述
+  这部分将给大家讲解有关gridview给内部子控件添加创建动画的内容。本部分效果图如下；
+
+  我们先来看一下gridLayoutAnimation标签有哪些属性
+
+  <?xml version="1.0" encoding="utf-8"?>
+  <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                       android:rowDelay="75%"
+                       android:columnDelay="60%"
+                       android:directionPriority="none"
+                       android:direction="bottom_to_top|right_to_left"
+                       android:animation="@android:anim/slide_in_left"/>
+
+  这是一个写好了的GridLayoutAnimation的动画文件。其中各字段的意义如下：
+  -rowDealy ： 每一行动画开始的延迟。与LayoutAnimation一样，可以去百分数。取值意义为，当前android:animation所指动画时长的倍数。
+  -columnDelay ：每一列动画开始的延迟。取值类型及意义与rowDelay相同
+  -directionPriority：方向优先级。取值为row、column、none，意义分别为；行优先、列优先、和无优先级（同时进行）；具体意义，后面会讲
+  -**direction **gridview动画方向
+  取值有四个：
+  left_to_right;列，从左向右开始动画
+  right_to_left 列，从右向左开始动画
+  top_to_bottom 行，从上向下开始动画
+  bottom_to_top 行，从下向上开始动画
+
+  这四个值之间可以通过 "|"连接，从而可以取多个值。很显然，left_to_right 和 right_to_left是互斥的，top_to_bottom 和 bottom_to_top
+  是互斥的。如果不指定direction字段，默认值为left_to_right |top_to_bottom;即从上往下，从左往右
+
+  2、示例
+  上面，我们简单讲述了girdLayoutAnimation 标签各字段的意义，下面我们就构建一个动画，看看效果，这部分的效果如下
+
+  第一： gridview 中各个元素的出场顺序为从上往下，从左往右
+  第二： gridLayoutAnimation 仅在gridview第一次创建时各个元素才会有出场动画，在创建成功以后，再向其中添加数据就不会再有动画。这一点与
+        layoutAnimation相同。
+
+  (1)、首先是grid_animation.xml
+  <?xml version="1.0" encoding="utf-8"?>
+  <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                       android:rowDelay="75%"
+                       android:columnDelay="60%"
+                       android:directionPriority="none"
+                       android:animation="@anim/slide_in_left"/>
+
+  这里没有设置android:direction属性，采用默认值 left_to_right top_to_bottom;然后是对应的animation动画slide_in_left.xml
+
+  <?xml version="1.0" encoding="utf-8"?>
+  <set xmlns:android="http://schemas.android.com/apk/res/android" android:duration="1000">
+      <translate android:fromXDelta="-50%p" android:toXDelta="0"/>
+      <alpha android:fromAlpha="0.0" android:toAlpha="1.0" />
+  </set>
+
+  与LayoutAnimation所使用的动画一样，也是从左侧50%的位置移动到初始位置，同时透明度从0变到1
+
+  （2）、程序布局main.xml
+  从效果图中也可以很简单的看出布局，布局很简单，一个按钮，一个gridview，代码如下：
+
+  <?xml version="1.0" encoding="utf-8"?>
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+      <Button
+              android:id="@+id/add_data"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="添加grid数据"/>
+
+
+      <GridView
+              android:id="@+id/grid"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:columnWidth="60dp"
+              android:gravity="center"
+              android:horizontalSpacing="10dp"
+              android:layoutAnimation="@anim/gride_animation"
+              android:numColumns="auto_fit"
+              android:stretchMode="columnWidth"
+              android:verticalSpacing="10dp"/>
+
+  </LinearLayout>
+
+  布局很简单，就不在细讲，这里最重要的部分，就是给GridView添加android:layoutAnimation"@anim/grid_animation"这句。
+  以添加gridayoutAnimation
+  下面看代码处理部分
+
+  （3）、代码处理
+    public class MyActivity extends Activity {
+        private GridAdapter mGrideAdapter;
+        private List<String> mDatas = new ArrayList<>();
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.main);
+
+            /**
+             * 填充gridview
+             */
+            GridView grid = (GridView) findViewById(R.id.grid);
+            mDatas.addAll(getData());
+            mGrideAdapter = new GridAdapter();
+            grid.setAdapter(mGrideAdapter);
+
+            /**
+             * 按钮点击响应
+             */
+            Button addData = (Button)findViewById(R.id.add_data);
+            addData.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addData();
+                }
+            });
+        }
+
+
+        private List<String> getData() {
+
+            List<String> data = new ArrayList<String>();
+            for (int i = 1;i<35;i++){
+                data.add("DATA "+i);
+            }
+            return data;
+        }
+
+
+        public void addData(){
+            mDatas.addAll(mDatas);
+            mGrideAdapter.notifyDataSetChanged();
+        }
+
+
+        public class GridAdapter extends BaseAdapter {
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView i = new TextView(MyActivity.this);
+                i.setText(mDatas.get(position));
+                i.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.WRAP_CONTENT, GridView.LayoutParams.WRAP_CONTENT));
+                return i;
+            }
+
+            public final int getCount() {
+                return mDatas.size();
+            }
+
+            public final Object getItem(int position) {
+                return null;
+            }
+
+            public final long getItemId(int position) {
+                return position;
+            }
+        }
+    }
+
+   这里主要是完成两个功能，第一：填充gridview ，第二：在点击按钮的时候想gridview中新加数据，看它是不是会进入动画，
+   先看第一部分；在Oncreate中
+
+   GridView grid = (GridView) findViewById(R.id.grid);
+   mDatas.addAll(getData());
+   mGrideAdapter = new GridAdapter();
+   grid.setAdapter(mGrideAdapter);
+
+   首先构造数据的函数getData()；代码如下，构造出35个数据
+
+   private List<String> getData() {
+
+       List<String> data = new ArrayList<String>();
+       for (int i = 1;i<35;i++){
+           data.add("DATA "+i);
+       }
+       return data;
+   }
+
+  然后是构造gridview的adapter的构造：
+
+  public class GridAdapter extends BaseAdapter {
+      public View getView(int position, View convertView, ViewGroup parent) {
+          TextView i = new TextView(MyActivity.this);
+          i.setText(mDatas.get(position));
+          i.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.WRAP_CONTENT, GridView.LayoutParams.WRAP_CONTENT));
+          return i;
+      }
+
+      public final int getCount() {
+          return mDatas.size();
+      }
+
+      public final Object getItem(int position) {
+          return null;
+      }
+
+      public final long getItemId(int position) {
+          return position;
+      }
+  }
+
+  在getView中，向每个item填充一个textview，将构造的数据mDatas所对应的String 作为textview 的内容；
+  最后将Adapter设置给gridview就可以了；
+
+  grid.setAdapter(mGridAdapter);
+
+  然后是第二部分，当点击按钮的时候，调用addData()向其中添加数据、
+
+  Button addData = (Button)findViewById(R.id.add_data);
+  addData.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          addData();
+      }
+  });
+
+  其中addData()的实现为：
+
+  public void addData(){
+      mDatas.addAll(mDatas);
+      mGrideAdapter.notifyDataSetChanged();
+  }
+
+  到在这里，我这个例子就讲完了，通过这个例子除了让大家知道GridLayoutAnimation的使用方法以外，更要大家知道
+  gridLayoutAnimation与layoutAnimation一样，都只有在viewGroup创建的时候，会对其中的item添加进入动画，在创建完成后，再添加数据将不会再有动画。
+
+  通过上面的示例也可以看到，通过xml方式实现gridview中item创建动画是非常容易的，只需要在gridview的xml中添加
+  andrid:layoutAnimaiton = "@anim/grid_animation" 即可。不需要在代码中做任何操作。
+
+  3、gridLayoutAnimation标签各属性详解
+
+  在简单看了上面使用例子以后，我们就详细来看看gridLayoutAnimation标签各个属性的意义吧。
+  有关rowDelay 、columnDelay 和animation字段，想必大家也都已经熟悉了，就不再讲了，这里着重讲一下directionPriority和direction
+
+  (1)、directionPriority
+
+  directionPriority指gridview动画优先级，取值有row，column，none意义分别为行有优先，列优先，和无优先级（同时进行）
+  还以上面的例子为例，我们使用direction的默认值 即 left_right | top_to_bottom,将android:directionPriority分别改变为
+  row,column,none看它的效果如何。
+  android:directionPriority = "row"
+  对应的grid_animation.xml内容为：
+
+  <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                       android:rowDelay="75%"
+                       android:columnDelay="60%"
+                       android:directionPriority="row"
+                       android:animation="@anim/slide_in_left"/>
+
+  从效果上可以看出，在优先级改为列以后，gridview中各个item的出场顺序就改为一列一列的出现了。
+
+  android:directionPriority = "none"
+  对应的grid_animation.xml内容为：
+  <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                       android:rowDelay="75%"
+                       android:columnDelay="60%"
+                       android:directionPriority="none"
+                       android:animation="@anim/slide_in_left"/>
+
+  从效果中可以看出，在优先给改为none以后，gridview中各个item的出场顺序就是行，列一起进行了。
+  在知道优先级字段的作用以后，我们来看看android:direction字段的意义
+
+  （2）、direction
+   direction表示gridview的各item的动画方向，取值如下，可以通过"|"连接多个属性值。
+   取值有四个：
+   -left_to_right 列：从左向右，开始动画
+   -right_to_left 列，从右向左，开始动画
+   -top_to_bottom 行，从上向下，开始动画
+   -bottom_to_top 行，从下向上，开始动画
+
+   为了更好的突显效果，我们将android:directionPriority 设置为none即行列一起进行动画。
+   android:direction ="left_to_right" 从左向右开始动画
+
+   对应的gird_animation.xml内容为：
+
+    <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:rowDelay="75%"
+                         android:columnDelay="60%"
+                         android:directionPriority="none"
+                         android:direction="left_to_right"
+                         android:animation="@anim/slide_in_left"/>
+
+    从效果图中，很明显可以看出，入场顺序是从左向右的，由于上下的入场顺序没有指定，默认是从上向下入场
+    android:direction = "righr_to_left" 从右向左开始动画
+    对应的gird_animation.xml内容为：
+
+    <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:rowDelay="75%"
+                         android:columnDelay="60%"
+                         android:directionPriority="none"
+                         android:direction="right_to_left"
+                         android:animation="@anim/slide_in_left"/>
+
+    很明显可以看出，各个item是从右向左入场的，同样由于上下的入场顺序没有指定，默认是从上向下入场
+    android:direction ="top_to_bottom" 从上向下开始动画
+    对应的grid_animation.xml 内容为：
+
+    <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:rowDelay="75%"
+                         android:columnDelay="60%"
+                         android:directionPriority="none"
+                         android:direction="top_to_bottom"
+                         android:animation="@anim/slide_in_left"/>
+
+    从效果图中，可以看出，各个item是从上向下入场的。由于左右入场的顺序没有指定，所以默认是从左向右入场。
+    android:direction = "bottom_to_top" 从下向上开始动画。
+    对应的gird_animation.xml内容为：
+
+    <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:rowDelay="75%"
+                         android:columnDelay="60%"
+                         android:directionPriority="none"
+                         android:direction="bottom_to_top"
+                         android:animation="@anim/slide_in_left"/>
+
+    从效果图中可以看出，各个item是从下向上入场的，同样由于左右入场顺序没有指定，所以默认是从左向右土场的。
+
+    组合：android :direction ="bottom_to_top | right_to_left"
+    前面我们说过，可以通过"|"将多个属性值连接起来，我们这里尝试一下纵向从下向上入场，横向从右向左入场
+
+    对应的gird_animation.xml内容为：
+    <gridLayoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:rowDelay="75%"
+                         android:columnDelay="60%"
+                         android:directionPriority="none"
+                         android:direction="bottom_to_top|right_to_left"
+                         android:animation="@anim/slide_in_left"/>
+
+    这里，有关directionPriority 和direction各个取值意义已经讲完了，下面我们来看如何通过代码来实现GridLayoutAnimation。
+
+    四、GridLayoutAnimation的代码实现 ——————GridLayoutAnimationController
+
+    1、概述
+    我们知道griLayoutAnimation标签在代码中对应GridLayoutAnimationController类，它的构造方法如下：
+
+     public GridLayoutAnimationController(Animation animation)
+     public GridLayoutAnimationController(Animation animation, float columnDelay, float rowDelay)
+
+     其中animation对应标签属性中的animation:animation
+     columnDelay对应标签属性中的android:columnDelay ，取值为float类型
+     rowDelay对应标签属性中的android:rowDelay,取值为float类型
+     然后是gridLayoutAnimationController 的几个函数：
+
+     /**
+      * 设置列动画开始延迟
+      */
+     public void setColumnDelay(float columnDelay)
+     /**
+      * 设置行动画开始延迟
+      */
+      public void setRowDelay(float rowDelay)
+      /**
+      * 设置gridview动画的入场方向。取值有：DIRECTION_BOTTOM_TO_TOP、DIRECTION_TOP_TO_BOTTOM、DIRECTION_LEFT_TO_RIGHT、DIRECTION_RIGHT_TO_LEFT
+      */
+      public void setDirection(int direction)
+      /**
+      * 动画开始优先级，取值有PRIORITY_COLUMN、PRIORITY_NONE、PRIORITY_ROW
+      */
+      public void setDirectionPriority(int directionPriority)
+
+     这些函数和意义都与xml中的属性相对应，这里就不再多讲了，下面我们就来看看实例中的应用吧
+
+
+     2、示例
+
+     与xml实现的效果类似，只是这里我们将不再写GridAnimation的xml文件，而是完全通过代码来构造GridAnimation。
+
+     无论怎样，入场动画还需要的，所以我们同样创建一个slide_in_left.xml文件；
+
+     <?xml version="1.0" encoding="utf-8"?>
+     <set xmlns:android="http://schemas.android.com/apk/res/android" android:duration="1000">
+         <translate android:fromXDelta="-50%p" android:toXDelta="0"/>
+         <alpha android:fromAlpha="0.0" android:toAlpha="1.0" />
+     </set>
+
+     然后是布局文件main.xml
+     <?xml version="1.0" encoding="utf-8"?>
+     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:orientation="vertical">
+
+
+         <GridView
+                 android:id="@+id/grid"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:columnWidth="60dp"
+                 android:gravity="center"
+                 android:horizontalSpacing="10dp"
+                 android:numColumns="auto_fit"
+                 android:stretchMode="columnWidth"
+                 android:verticalSpacing="10dp"/>
+
+     </LinearLayout>
+
+     最后是MyActivity中的填充部分
+
+     public class MyActivity extends Activity {
+         private GridAdapter mGrideAdapter;
+         private List<String> mDatas = new ArrayList<>();
+         @Override
+         public void onCreate(Bundle savedInstanceState) {
+             super.onCreate(savedInstanceState);
+             setContentView(R.layout.main);
+
+             /**
+              * 填充gridview
+              */
+             GridView grid = (GridView) findViewById(R.id.grid);
+             mDatas.addAll(getData());
+             mGrideAdapter = new GridAdapter();
+             grid.setAdapter(mGrideAdapter);
+
+             Animation animation = AnimationUtils.loadAnimation(MyActivity.this,R.anim.slide_in_left);
+             GridLayoutAnimationController controller = new GridLayoutAnimationController(animation);
+             controller.setColumnDelay(0.75f);
+             controller.setRowDelay(0.5f);
+             controller.setDirection(GridLayoutAnimationController.DIRECTION_BOTTOM_TO_TOP|GridLayoutAnimationController.DIRECTION_LEFT_TO_RIGHT);
+             controller.setDirectionPriority(GridLayoutAnimationController.PRIORITY_NONE);
+             grid.setLayoutAnimation(controller);
+             grid.startLayoutAnimation();
+         }
+
+         private List<String> getData() {
+
+             List<String> data = new ArrayList<String>();
+             for (int i = 1;i<35;i++){
+                 data.add("DATA "+i);
+             }
+             return data;
+         }
+
+
+         public void addData(){
+             mDatas.addAll(mDatas);
+             mGrideAdapter.notifyDataSetChanged();
+         }
+
+
+         public class GridAdapter extends BaseAdapter {
+             public View getView(int position, View convertView, ViewGroup parent) {
+                 TextView i = new TextView(MyActivity.this);
+                 i.setText(mDatas.get(position));
+                 i.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.WRAP_CONTENT, GridView.LayoutParams.WRAP_CONTENT));
+                 return i;
+             }
+
+             public final int getCount() {
+                 return mDatas.size();
+             }
+
+             public final Object getItem(int position) {
+                 return null;
+             }
+
+             public final long getItemId(int position) {
+                 return position;
+             }
+         }
+     }
+
+     这部分代码虽然比较长，但填充gridview部分与上段实现是一致的，唯一不同的就是设置GridLayoutAnimationController的部分：
+
+     Animation animation = AnimationUtils.loadAnimation(MyActivity.this,R.anim.slide_in_left);
+     GridLayoutAnimationController controller = new GridLayoutAnimationController(animation);
+     controller.setColumnDelay(0.75f);
+     controller.setRowDelay(0.5f);
+     controller.setDirection(GridLayoutAnimationController.DIRECTION_BOTTOM_TO_TOP|GridLayoutAnimationController.DIRECTION_LEFT_TO_RIGHT);
+     controller.setDirectionPriority(GridLayoutAnimationController.PRIORITY_NONE);
+     grid.setLayoutAnimation(controller);
+     grid.startLayoutAnimation();
+
+     这部分理解起来难度也不大，无外乎就是构造一个GridLayoutAnimationController，然后通过它的各个set函数把各个属性值设置进去。
+
+     这里有关LayoutAnimation 和GridLayoutAnimation的部分就讲完了，下面对他们特性做一个总结。
+
+     总结：
+     1、LayoutAnimation 和GridLayoutAnimation都是在api1时就已经引入进来了，所以不用担心api不支持的问题。
+     2、GridLayoutAnimation和layoutAnimation一样，都只是在viewgroup创建的时候，会对其中item添加进入动画，在创建完成之后，再添加数据
+     将不会有动画。
+     3、layoutAnimation和GridLayoutAnimation仅支持animation动画，不支持animator动画，下篇将给大家讲解如何在运动中给viewgroup
+     中的进入退出动画。
 
 
 
