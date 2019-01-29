@@ -15,6 +15,7 @@ import com.xibei.personaldesign.itemDemo.ActivityAnimation11;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation12;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation13;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation14;
+import com.xibei.personaldesign.itemDemo.ActivityAnimation15;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation2;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation3;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation4;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityAnimation12(),"动画 12 ：联合动画");
         addData(new ActivityAnimation13(),"动画 13 ：联合动画示例");
         addData(new ActivityAnimation14(),"动画 14 ：代码实现layout、gridlayoutanimation");
+        addData(new ActivityAnimation15(),"动画 15 ：animateLayoutChanges 与 LayoutTransition");
     }
 
 
