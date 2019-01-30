@@ -1,7 +1,13 @@
 # animation
 
-![image](https://github.com/jiezongnewstar/AnimationViewandWedgit/blob/master/app/src/main/res/screen.gif)
-)
+![image]()
+
+<p align="center">
+    <img src="https://github.com/jiezongnewstar/AnimationViewandWedgit/blob/master/app/src/main/res/screen.gif">
+    <p align="center">
+        <em>图片示例1</em>
+    </p>
+</p>
 
 android 动画、自定义控件，学习记录demo</br>
 
