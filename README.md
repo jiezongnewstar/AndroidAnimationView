@@ -1,7 +1,5 @@
 # animation
 
-![image]()
-
 <p align="center">
     <img src="https://github.com/jiezongnewstar/AnimationViewandWedgit/blob/master/app/src/main/res/screen1.gif">
     <p align="center">
