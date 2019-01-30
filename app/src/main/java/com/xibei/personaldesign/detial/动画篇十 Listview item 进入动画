@@ -1,0 +1,574 @@
+    前面我们将使用layoutAnimation 和layouttranslation 实现ViewGroup 中 item 加载动画的方法，但他们都各自存在问题，layoutAnimation在API 11
+中就已经引入，但只能在动画初次创建时才能使用指定动画。控件创建以后，再往ViewGroup里加item 就不会再有动画。这显然就不合适的。
+
+    LayoutTranslation能够实现无论何时往ViewGroup 中添加控件都可以给其中控件使用动画。但最大的问题是，它的API等级是11.而且也没有兼容包可
+供我们使用这个函数。
+    这样问题就来了，如果我们想在兼容API 8以上的机型，完成Listview中各个item进入时都添加动画，这要怎么来做呢?
+
+    我们要实现这样的效果，当每个item进入的时候，都添加了动画，前面我们说了layoutAnimation 和LayoutTranslation 所存在的问题，那抛开这两个
+函数，我们要如何实现item 进入动画呢？
+    别忘了，Listview在得到每个item时会调用BaseAdapter 的getView 方法！getView中每个convertview就是当前要显示的item所对应的View，所以我们直接
+对convertView 添加动画就好了。
+    下面我们来看看实现。
+    一、搭框架
+    1、item布局(item_layout.xml)
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/img"
+                android:layout_width="fill_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"/>
+
+        <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+    2、ListAdapter
+
+    public class ListAdapter extends BaseAdapter {
+        private List<Drawable> mDrawableList = new ArrayList<>();
+        private int mLength = 0;
+        private LayoutInflater mInflater;
+        private Context mContext;
+        private ListView mListView;
+
+        public ListAdapter(Context context, ListView listView, List<Drawable> drawables, int length) {
+            mDrawableList.addAll(drawables);
+            mLength = length;
+            mInflater = LayoutInflater.from(context);
+            mContext = context;
+            mListView = listView;
+        }
+
+        @Override
+        public int getCount() {
+            return mLength;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mDrawableList.get(position % mDrawableList.size());
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+
+            if (convertView == null) {
+
+                holder = new ViewHolder();
+                convertView = mInflater.inflate(R.layout.item_layout, null);
+                holder.mImageView = (ImageView) convertView.findViewById(R.id.img);
+                holder.mTextView = (TextView) convertView.findViewById(R.id.text);
+
+
+
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            convertView.setTag(holder);
+
+            holder.mImageView.setImageDrawable(mDrawableList.get(position % mDrawableList.size()));
+            holder.mTextView.setText(position+"");
+
+            return convertView;
+        }
+
+        public class ViewHolder {
+            public ImageView mImageView;
+            public TextView mTextView;
+        }
+    }
+
+    首先是构造函数
+
+    public ListAdapter(Context context, ListView listView, List<Drawable> drawables, int length) {
+        mDrawableList.addAll(drawables);
+        mLength = length;
+        mInflater = LayoutInflater.from(context);
+        mContext = context;
+        mListView = listView;
+    }
+
+    首先是传进来的几个参数，List<Drawable> drawables 是 listview要循环显示的图片drawable对象列表，length表示当前listview要显示多少行
+可能有些同学会注意到，我们还把Lisview对象给传进来了，然后在上面的代码中没有用到，其中把listview封装进adapter是有一个好习惯，因为我们可能
+会在adapter中监听listview的状态从而改变item的显示情况。我们 这里目前还没有用到listview的状态从而改变item的显示情况。我们这里目前还没有用
+到listview
+
+    然后是getitem函数：
+
+    @Override
+    public Object getItem(int position) {
+        return mDrawableList.get(position % mDrawableList.size());
+    }
+
+    我们知道本身的BaseAdapter并没有使用getitem(int position)函数，重写这个函数是为了让我们在BaseAdapter实例中，可以通过getitem来获取
+我们想要的实例(类似下面这样)
+    ListView listView = (ListView)findViewById(R.id.list);
+    final ListAdapter adapter = new ListAdapter(this,listView,drawables,300);
+    listView.setAdapter(adapter);
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    	    //关键在这里哦
+            Drawable drawable = (Drawable) adapter.getItem(position);
+        }
+    });
+
+    这里我们将当前位置所对应的图片Drawable传进去：
+    public Object getItem(int position) {
+        return mDrawableList.get(position % mDrawableList.size());
+    }
+
+    大家可能会疑问：为什么要用position % mDrawableList.size() 来得到当前图片在图片列表中的索引？因为我们是循环显示的图片的，比如我们总
+共有九张图片，那当前第12个item时，显示的应该是第3张图了，position的值为12(因为adapter的position是从0开始),所以12%9 = 3;这就对上了，理解不了
+的同学，多拿几个数来算算，比如当显示到第15张时，position是多少，对应的图片应该是哪一张呢？
+
+    最后是getView()函数
+    public View getView(int position, View convertView, ViewGroup parent) {
+       ViewHolder holder = null;
+
+       if (convertView == null) {
+
+           holder = new ViewHolder();
+           convertView = mInflater.inflate(R.layout.item_layout, null);
+           holder.mImageView = (ImageView) convertView.findViewById(R.id.img);
+           holder.mTextView = (TextView) convertView.findViewById(R.id.text);
+       } else {
+           holder = (ViewHolder) convertView.getTag();
+       }
+
+       convertView.setTag(holder);
+
+       holder.mImageView.setImageDrawable(mDrawableList.get(position % mDrawableList.size()));
+       holder.mTextView.setText(position+"");
+
+       return convertView;
+    }
+
+    3、主布局(main.xml)
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:background="#ffffff">
+
+        <ListView
+                android:id="@+id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"/>
+    </LinearLayout>
+
+    4、MyActivity.java
+    public class MyActivity extends Activity {
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.main);
+
+
+            List<Drawable> drawables = new ArrayList<>();
+            drawables.add(getResources().getDrawable(R.drawable.pic1));
+            drawables.add(getResources().getDrawable(R.drawable.pic2));
+            drawables.add(getResources().getDrawable(R.drawable.pic3));
+            drawables.add(getResources().getDrawable(R.drawable.pic4));
+            drawables.add(getResources().getDrawable(R.drawable.pic5));
+            drawables.add(getResources().getDrawable(R.drawable.pic6));
+            drawables.add(getResources().getDrawable(R.drawable.pic7));
+            drawables.add(getResources().getDrawable(R.drawable.pic8));
+            drawables.add(getResources().getDrawable(R.drawable.pic9));
+
+
+            ListView listView = (ListView)findViewById(R.id.list);
+            ListAdapter adapter = new ListAdapter(this,listView,drawables,300);
+            listView.setAdapter(adapter);
+        }
+    }
+
+    二、item添加动画 ————初步实现
+    1、动画文件(bottom_in_anim.xml)
+    先定义从底部进入动画：
+    <?xml version="1.0" encoding="utf-8"?>
+    <set xmlns:android="http://schemas.android.com/apk/res/android"
+         android:duration="1000">
+        <translate android:fromYDelta="100%" android:toYDelta="0"/>
+        <alpha android:fromAlpha="0" android:toAlpha="1"/>
+    </set>
+
+    这段动画不难理解，效果是从底部进入，alpha值从0变到1；
+
+    2、在Adapter中添加动画代码
+    首先，我们再ListAdapter中初始化的时候，加载动画；
+    public class ListAdapter extends BaseAdapter {
+        …………
+        private Animation animation;
+
+        public ListAdapter(Context context, ListView listView, List<Drawable> drawables, int length) {
+            …………
+            animation = AnimationUtils.loadAnimation(mContext,R.anim.bottom_in_anim);
+        }
+        …………
+    }
+
+    然后再getView的时候为每个convertView添加上动画
+    public View getView(int position, View convertView, ViewGroup parent) {
+       ViewHolder holder = null;
+
+       if (convertView == null) {
+
+           holder = new ViewHolder();
+           convertView = mInflater.inflate(R.layout.item_layout, null);
+           holder.mImageView = (ImageView) convertView.findViewById(R.id.img);
+           holder.mTextView = (TextView) convertView.findViewById(R.id.text);
+       } else {
+           holder = (ViewHolder) convertView.getTag();
+       }
+       convertView.startAnimation(animation);
+       convertView.setTag(holder);
+
+       holder.mImageView.setImageDrawable(mDrawableList.get(position % mDrawableList.size()));
+       holder.mTextView.setText(position+"");
+
+       return convertView;
+    }
+
+    让一个view开始动画非常简单，只需要调用convertview.startAniamtion(animation)；即可；这样就可以实现在构造item的时候就开始动画
+    ListAdapter完整代码如下：
+
+    public class ListAdapter extends BaseAdapter {
+        private List<Drawable> mDrawableList = new ArrayList<>();
+        private int mLength = 0;
+        private LayoutInflater mInflater;
+        private Context mContext;
+        private ListView mListView;
+        private Animation animation;
+
+        public ListAdapter(Context context, ListView listView, List<Drawable> drawables, int length) {
+            mDrawableList.addAll(drawables);
+            mLength = length;
+            mInflater = LayoutInflater.from(context);
+            mContext = context;
+            mListView = listView;
+            animation = AnimationUtils.loadAnimation(mContext,R.anim.bottom_in_anim);
+        }
+
+        @Override
+        public int getCount() {
+            return mLength;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mDrawableList.get(position % mDrawableList.size());
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+
+            if (convertView == null) {
+
+                holder = new ViewHolder();
+                convertView = mInflater.inflate(R.layout.item_layout, null);
+                holder.mImageView = (ImageView) convertView.findViewById(R.id.img);
+                holder.mTextView = (TextView) convertView.findViewById(R.id.text);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            convertView.startAnimation(animation);
+            convertView.setTag(holder);
+
+            holder.mImageView.setImageDrawable(mDrawableList.get(position % mDrawableList.size()));
+            holder.mTextView.setText(position+"");
+
+            return convertView;
+        }
+
+        public class ViewHolder {
+            public ImageView mImageView;
+            public TextView mTextView;
+        }
+    }
+
+    三、优化
+    上面虽然解决了进入时添加动画的问题，但仔细的同学可以看出，这个效果中还存在几个问题，可能上面的效果图还看不清楚具体存在的问题
+    1、如果上拉的时候，一下拉上了几个item,会一起从底部出现
+    2、在下拉的时候，上部出现的item也会应用上动画
+    首先，解决第二个问题比较简单，只需要判断当前手指上滑还上下滑就可以了，只有当手指向上滑的时候，才对底部出现的item添加上入场动画，
+    其它时间不添加动画即可
+    第一个问题其实也比较容易解决，我们可以通过Listview.getChildCount()得到当前ListView中有多少item。我们只给最后一个添加动画即可。其它的就直接
+显示就好了。
+
+    1、上下滑动问题
+    首先，我们首先解决上下滑动问题，这个问题其实比较好解决，只需要监听listview的onScrollListener，根据它判断出当前ListView是上滑还是下滑
+就可以了。
+    先看我们再onScrollListener中都有哪些参数：
+    AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        }
+    };
+
+    我们主要关注onScroll的监听
+    onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+    有四个参数：
+    -第一个参数 AbsListView view ： 是当前listview的对象
+    -第二个参数 int firstVisibleItem ：表示当前第一个可见的item在listview 所有item中的索引，这里需要非常注意，firstVisibleItem
+    getChildAt(int position)中的参数position的意义不同，firstVisbleItem是指整个ListView中的位置。而getChildAt(int position)中
+    参数position传的是当前屏幕显示区域中item的索引，屏幕中第一个item的view可以通过getChildAt(0)得到。
+    -第三个参数int visbleItemConut ：表示当前屏幕中可见的有几条item
+    -第四个参数int totalItemCount：表示当前listview总共有多少条item，得到的值与adapter.getCount()的值相同。
+
+    在理解了上面四个参数后，我们子阿来看看下移的情况
+
+    向下移动包括两种情况
+    1、屏幕中第一个item或前几个item一起移出屏幕，在这种情况下，我们只需要判断firstVisbleItem是否比上次的值大即可。即第一个显示item是不是已经向下
+    移了
+
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        /**
+         * firstVisibleItem > mFirstPosition表示向下滑动一个或多个Item
+         */
+        isScrollDown = firstVisibleItem > mFirstPosition;
+        mFirstPosition = firstVisibleItem;
+    }
+
+    2、可能用户并没有一次性移一整条item，而且仅让当前item向上移了一点点。这里，由于当前可见的第一个item的位置仍然是firstVisbleItem，只是他的
+    top值变了。
+
+    在这个效果图中，只是将第一个item向上移了一点点，第一个item左上角坐标从(0,-100)变成了(0,-200);所以这个图中，我们可以得到如何计算在这种
+    情况下是否上移。
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+       View firstChild = view.getChildAt(0);
+       if (firstChild == null) return;
+       int top = firstChild.getTop();
+       /**
+        * mFirstTop > top表示在当前这个item中滑动
+        */
+       isScrollDown = mFirstTop > top;
+       mFirstTop = top;
+    }
+
+    只需要判断当前第一个item的左上角坐标是不是变小了即可，这里需要注意，得到屏幕中显示的第一个Item是通过ListView.getChildAt(int position)
+    函数得到的。我们上面已经讲到，ListView.getChildAt(int position)中参数position表示当前item所在屏幕显示区域中的索引，屏幕中第一个item
+    的所以是0.
+    所以我们将这两种情况进行合并，得到完整的onScrollListener：
+
+    AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            View firstChild = view.getChildAt(0);
+            if (firstChild == null) return;
+            int top = firstChild.getTop();
+            /**
+             * firstVisibleItem > mFirstPosition表示向下滑动一整个Item
+             * mFirstTop > top表示在当前这个item中滑动
+             */
+            isScrollDown = firstVisibleItem > mFirstPosition || mFirstTop > top;
+            mFirstTop = top;
+            mFirstPosition = firstVisibleItem;
+        }
+    };
+
+    然后再getView的时候，判断如果是向下滑动，就是添加动画
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+       ViewHolder holder = null;
+
+       if (convertView == null) {
+
+           holder = new ViewHolder();
+           convertView = mInflater.inflate(R.layout.item_layout, null);
+           holder.mImageView = (ImageView) convertView.findViewById(R.id.img);
+           holder.mTextView = (TextView) convertView.findViewById(R.id.text);
+       } else {
+           holder = (ViewHolder) convertView.getTag();
+       }
+
+       if (isScrollDown) {
+           convertView.startAnimation(animation);
+       }
+       convertView.setTag(holder);
+
+       holder.mImageView.setImageDrawable(mDrawableList.get(position % mDrawableList.size()));
+       holder.mTextView.setText(position + "");
+
+       return convertView;
+    }
+
+    2、多个item同时动画的问题
+    由于我们只能在item生成是给这个item添加动画，所以要解决做个item同时移动的问题，我们只能给最后一个item添加动画，其他item不给他们添加；
+    但我们怎么知道当前这个item是不是要显示最后一个item呢？无法得知，所以一个中转方案是，在每一个item在添加动画前，都把低昂齐纳显示区域内所有
+    item动画给取消，然后给当前convertView添加上动画；当listview滚动到最后一个item的时候，自然，同样也是先把所有动画取消，然后给他自己添加上
+    动画，所以这样看起来就好像是只给他自己添加了动画，之前滚动的item就是没有动画的。
+
+    代码如下：
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder = null;
+
+        if (convertView == null) {
+
+            holder = new ViewHolder();
+            convertView = mInflater.inflate(R.layout.item_layout, null);
+            holder.mImageView = (ImageView) convertView.findViewById(R.id.img);
+            holder.mTextView = (TextView) convertView.findViewById(R.id.text);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        //清除当前显示区域中所有item的动画
+        for (int i=0;i<mListView.getChildCount();i++){
+            View view = mListView.getChildAt(i);
+            view.clearAnimation();
+        }
+        //然后给当前item添加上动画
+        if (isScrollDown) {
+            convertView.startAnimation(animation);
+        }
+        convertView.setTag(holder);
+
+        holder.mImageView.setImageDrawable(mDrawableList.get(position % mDrawableList.size()));
+        holder.mTextView.setText(position + "");
+
+        return convertView;
+    }
+
+    在这段代码中，相比上面的代码，我们只添加了一段语句：
+    for (int i=0;i<mListView.getChildCount();i++){
+        View view = mListView.getChildAt(i);
+        view.clearAnimation();
+    }
+
+    上面我们讲了mListView.getChildAt(int position)的用法，说到它的参数position表示的是在当前屏幕显示区域中当前item的索引是0；而
+    mListview.getChildCount()则表示当前屏幕显示区域中有多少个item。所以我们利用上面的代码，对屏幕显示区域中每个item进行此时ListAdapter
+    完整的代码为:
+
+    public class ListAdapter extends BaseAdapter {
+        private List<Drawable> mDrawableList = new ArrayList<>();
+        private int mLength = 0;
+        private LayoutInflater mInflater;
+        private Context mContext;
+        private ListView mListView;
+        private Animation animation;
+        private int mFirstTop, mFirstPosition;
+        private boolean isScrollDown;
+
+        public ListAdapter(Context context, ListView listView, List<Drawable> drawables, int length) {
+            mDrawableList.addAll(drawables);
+            mLength = length;
+            mInflater = LayoutInflater.from(context);
+            mContext = context;
+            mListView = listView;
+            animation = AnimationUtils.loadAnimation(mContext, R.anim.bottom_in_anim);
+            mListView.setOnScrollListener(mOnScrollListener);
+        }
+
+        AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                View firstChild = view.getChildAt(0);
+                if (firstChild == null) return;
+                int top = firstChild.getTop();
+                /**
+                 * firstVisibleItem > mFirstPosition表示向下滑动一整个Item
+                 * mFirstTop > top表示在当前这个item中滑动
+                 */
+                isScrollDown = firstVisibleItem > mFirstPosition || mFirstTop > top;
+                mFirstTop = top;
+                mFirstPosition = firstVisibleItem;
+            }
+        };
+
+        @Override
+        public int getCount() {
+            return mLength;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mDrawableList.get(position % mDrawableList.size());
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+
+            if (convertView == null) {
+
+                holder = new ViewHolder();
+                convertView = mInflater.inflate(R.layout.item_layout, null);
+                holder.mImageView = (ImageView) convertView.findViewById(R.id.img);
+                holder.mTextView = (TextView) convertView.findViewById(R.id.text);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            //清除当前显示区域中所有item的动画
+            for (int i=0;i<mListView.getChildCount();i++){
+                View view = mListView.getChildAt(i);
+                view.clearAnimation();
+            }
+            //然后给当前item添加上动画
+            if (isScrollDown) {
+                convertView.startAnimation(animation);
+            }
+            convertView.setTag(holder);
+
+            holder.mImageView.setImageDrawable(mDrawableList.get(position % mDrawableList.size()));
+            holder.mTextView.setText(position + "");
+
+            return convertView;
+        }
+
+        public class ViewHolder {
+            public ImageView mImageView;
+            public TextView mTextView;
+        }
+    }
