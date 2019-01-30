@@ -61,6 +61,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".itemDemo.ActivityAnimation16"
             android:screenOrientation="portrait" />
+        <activity android:name=".itemDemo.ActivityView1"
+            android:screenOrientation="portrait" />
 
 
 

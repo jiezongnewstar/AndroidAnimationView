@@ -1,0 +1,110 @@
+    一、Paint与Canvas
+    像我们平时画图一样，需要两个工具，纸和笔。Paint就相当于笔，而Canvas就是纸，这里叫画布。所以，凡有跟要花的东西设置相关的，
+比如大小，粗细，画笔颜色，透明度，字体的样式等等，都是在Paint里设置；同样，凡是要画出成品的东西，比如圆形，矩形，文字等相关的都在Canvas里生成。
+
+    下面我们先说下Paint的基本设置函数
+    -paint.setAntiAlias(true)  :抗锯齿功能
+    -paint.setColor(Color.RED) :设置画笔颜色
+    -paint.setStyle(Style.FILL) :设置填充样式
+    -paint.setStrokeWidth(30)  :设置画笔宽度
+    -paint.setShadowLayer(10,15,15,Color.GREEN) :设置阴影
+
+    前两个没什么好说的，看填充样式的区别：
+    1、void setStyle(Paint.Style style) 设置填充样式
+    Paint.Style.FILL ：填充内部
+    Paint.Style.FILL_AND_STROKE :填充内部和描边
+    Paint.Style.STROKE :仅描边
+
+    看下这三个类型的不同，下面以话的一个圆形为例：
+
+    可见，FILL 与 FILL_AND_STROKE 没什么区别。
+
+    2、setShadowLayer(float radius,float dx,float dy,int color) 添加阴影
+
+    参数：
+    radius:阴影的倾斜度
+    dx:水平位移
+    dy:垂直位移
+
+    使用代码：
+    paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
+
+    然后是Canvas 的基本设置：
+    画布背景设置：
+
+    -canvas.drawColor(Color.BLUE)
+    -canvas.drawRGB(255,255,0) 这两个功能是一样，都用来设置背景颜色的
+
+    二、实例操作
+    先给大家讲下怎么在写画图程序，大家可以边写边看效果是怎样的，先利用一个画直线的函数测试一下吧，画直线当然是canvas.drawline();
+上面说了，有关画笔设置都是Paint,有关画图的都在Canvas类中；
+    1、首先新建一个工程，把默认的XML改成FrameLayout布局，布局代码如下：
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.try_paint_blog.MainActivity" >
+
+
+    </FrameLayout>
+
+    这里有个特别要注意的地方，给根节点FrameLayout加一个ID号，后面用来在它内部添加视图用的
+    2、然后新建一个视图类，派生自View，为什么要新建视图类呢，因为我们要自由的显示东西，当然要重写视图类了，在OnDraw()函数
+中返回什么，这个视图就会长什么样。话不多说，新建一个派生自View的类MyView，然后重写OnDraw()函数：
+
+    public class MyView extends View {
+
+    	Context m_context;
+    	public MyView(Context context) {
+    		super(context);
+    		// TODO Auto-generated constructor stub
+
+    		m_context=context;
+    	}
+
+    	//重写OnDraw（）函数，在每次重绘时自主实现绘图
+    	@Override
+    	protected void onDraw(Canvas canvas) {
+    		// TODO Auto-generated method stub
+    		super.onDraw(canvas);
+
+
+    		//设置画笔基本属性
+    		Paint paint=new Paint();
+    		paint.setAntiAlias(true);//抗锯齿功能
+    		paint.setColor(Color.RED);  //设置画笔颜色
+    		paint.setStyle(Style.FILL);//设置填充样式   Style.FILL/Style.FILL_AND_STROKE/Style.STROKE
+    		paint.setStrokeWidth(5);//设置画笔宽度
+    		paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
+
+    		//设置画布背景颜色
+            canvas.drawRGB(255, 255,255);
+
+            //画圆
+            canvas.drawCircle(190, 200, 150, paint);
+    	}
+
+    }
+
+    在这段代码中，首先对画笔进行基本的样式设置，(对几何图形设置阴影，好像没作用)，然后利用DrawCircle()画了一个园。
+关于这个函数，下面会再讲，大家知道用来画圆就好了。
+
+    3、视图类写好了，下面就将加入到Activity中，显示出来，在MainActivity中添加如下代码：
+
+    public class MainActivity extends Activity {
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+          setContentView(R.layout.activity_main);
+
+          FrameLayout root=(FrameLayout)findViewById(R.id.root);
+          root.addView(new MyView(MainActivity.this));
+        }
+
+    }
+
+    首先找到FrameLayout结点，然后重新生成MyView实例加入到其中。
