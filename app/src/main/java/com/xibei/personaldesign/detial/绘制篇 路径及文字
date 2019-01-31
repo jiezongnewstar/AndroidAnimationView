@@ -1,0 +1,389 @@
+    一、创建路径
+        canvas中绘制路径利用：
+        void drawPath(Path path,Paint paint)
+
+        1、直线路径
+        void moveTo(float x1,float y1):直线的开始点；即将直线路径的绘制直线路径的开始点；lineTo()可以一直用；
+        void close(): 如果连续画了几条直线，但没有形成闭环，调用close()会将路径收尾点连接起来，形成闭环；
+
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+        paint.setStyle(Style.STROKE);//填充样式改为描边
+        paint.setStrokeWidth(5);//设置画笔宽度
+
+        Path path = new Path();
+
+        path.moveTo(10, 10); //设定起始点
+        path.lineTo(10, 100);//第一条直线的终点，也是第二条直线的起点
+        path.lineTo(300, 100);//画第二条直线
+        path.lineTo(500, 100);//第三条直线
+        path.close();//闭环
+
+        canvas.drawPath(path, paint);
+
+        2、矩形路径
+
+        void addRect(float left,float top,float right,float bottom,Path.Direction dir)
+        void addRect(Rect rect,Path.Direction dir)
+
+        这里Path类创建矩形路径的参数与上篇canvas绘制矩形差不多，唯一不同的一点是增加了Path.Direction 参数
+        Path.Direction 有两个值
+        Path.Direction.CVV :是counter -clockwise 缩写，指创建逆时针方向的矩形路径；
+        Path。Direction.CW ：是clockwise 的缩写，指创建顺时针方向的矩形路径；
+
+        //先创建两个大小一样的路径
+        //第一个逆向生成
+        Path CCWRectpath = new Path();
+        RectF rect1 =  new RectF(50, 50, 240, 200);
+        CCWRectpath.addRect(rect1, Direction.CCW);
+
+        //第二个顺向生成
+        Path CWRectpath = new Path();
+        RectF rect2 =  new RectF(290, 50, 480, 200);
+        CWRectpath.addRect(rect2, Direction.CW);
+
+        //先画出这两个路径
+        canvas.drawPath(CCWRectpath, paint);
+        canvas.drawPath(CWRectpath, paint);
+
+        问：从效果图中，看不出顺时针生成和逆时针生成的任何区别，怎么会没区别呢？
+        答：当然没区别啦，无论正时针还是逆时针，仅仅是生成方式不同，矩形就那么大画出来的路径矩形当然与矩形一样大了。
+        问：那生成方式有什么区别呢？
+        答：生成方式区别在于，依据生成方向排版的文字！后面我们会讲到文字，文字是可以依据路径排版的，那文字的行走方向就是
+        依据路径的生成方向
+
+        //先创建两个大小一样的路径
+        //第一个逆向生成
+        Path CCWRectpath = new Path();
+        RectF rect1 =  new RectF(50, 50, 240, 200);
+        CCWRectpath.addRect(rect1, Direction.CCW);
+
+        //第二个顺向生成
+        Path CWRectpath = new Path();
+        RectF rect2 =  new RectF(290, 50, 480, 200);
+        CWRectpath.addRect(rect2, Direction.CW);
+
+        //先画出这两个路径
+        canvas.drawPath(CCWRectpath, paint);
+        canvas.drawPath(CWRectpath, paint);
+
+        //依据路径写出文字
+        String text="风萧萧兮易水寒，壮士一去兮不复返";
+        paint.setColor(Color.GRAY);
+        paint.setTextSize(35);
+        canvas.drawTextOnPath(text, CCWRectpath, 0, 18, paint);//逆时针生成
+        canvas.drawTextOnPath(text, CWRectpath, 0, 18, paint);//顺时针生成
+
+        3、圆角矩形路径
+        void addRoundRect (RectF rect,float [] radii,Path.Direction dir)
+        void addRoundRect(RectF rect,float rx,float ry,Path.Direction dir)
+
+        这里有两个构造函数，部分参数说明如下：
+        第一个构造函数：可以定制每个角的圆角大小：
+        float[] radii: 必须传图8个数值，分四组，分别对应每个角所使用的椭圆的横轴半径和纵轴半径，如{x1,y1,x2,y2,x3,y3,x4,y4},
+        其中,x1,y1对应一个角的(左上角)用来产生圆角的椭圆的横轴半径和纵轴半径，其他类推.....
+        第二个构造函数：只能构建统一圆角大小
+        float rx：所产生的圆角的椭圆的横轴半径；
+        float ry: 所产生圆角的椭圆的纵轴半径；
+
+        Path path = new Path();
+        RectF rect1 =  new RectF(50, 50, 240, 200);
+        path.addRoundRect(rect1, 10, 15 , Direction.CCW);
+
+        RectF rect2 =  new RectF(290, 50, 480, 200);
+        float radii[] ={10,15,20,25,30,35,40,45};
+        path.addRoundRect(rect2, radii, Direction.CCW);
+
+        canvas.drawPath(path, paint);
+
+        4、圆形路径
+        void addCircle(float x,float y,float radius,Path.Direction dir)
+        参数说明：
+        float x: 圆心X轴坐标
+        float y：圆心Y轴坐标
+        float radius: 圆半径
+
+        Path path = new Path();
+        path.addCircle(200, 200, 100, Direction.CCW);
+        canvas.drawPath(path, paint);
+
+        5、椭圆路径
+        void addOval(RectF oval,Path.Direction dir)
+        参数说明：
+        RectF oval：生成椭圆所对应的矩形
+        Path.Direction: 生成方式，与矩形一样，分为顺时针与逆时针，意义完全相同，不再重复
+
+        Path path = new Path();
+        RectF rect =  new RectF(50, 50, 240, 200);
+        path.addOval(rect, Direction.CCW);
+        canvas.drawPath(path, paint);
+
+        6、弧形路径
+        void addArc(RectF oval,float startAngle,float sweepAngle)
+
+        参数：
+        RectF oval:弧是椭圆的一部分，这个参数就是生产椭圆所对应的矩形;
+        float startAngle: 开始的角度，X轴正方向O度
+        float sweepAngle:持续的度数；
+
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+        paint.setStyle(Style.STROKE);//填充样式改为描边
+        paint.setStrokeWidth(5);//设置画笔宽度
+
+        Path path = new Path();
+        RectF rect =  new RectF(50, 50, 240, 200);
+        path.addArc(rect, 0, 100);
+
+        canvas.drawPath(path, paint);//画出路径
+
+        7、线段轨迹 ----待补充
+        void quadTo(float x1,float y1,float x2, float,y2)
+
+        二、文字
+        1、Paint相关设置
+
+        //普通设置
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setStyle(Paint.Style.FILL);//绘图样式，对于设文字和几何图形都有效
+        paint.setTextAlign(Align.CENTER);//设置文字对齐方式，取值：align.CENTER、align.LEFT或align.RIGHT
+        paint.setTextSize(12);//设置文字大小
+
+        //样式设置
+        paint.setFakeBoldText(true);//设置是否为粗体文字
+        paint.setUnderlineText(true);//设置下划线
+        paint.setTextSkewX((float) -0.25);//设置字体水平倾斜度，普通斜体字是-0.25
+        paint.setStrikeThruText(true);//设置带有删除线效果
+
+        //其它设置
+        paint.setTextScaleX(2);//只会将水平方向拉伸，高度不会变
+
+        示例1：绘图样式的区别：
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setTextSize(80);//设置文字大小
+
+        //绘图样式，设置为填充
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawText("欢迎光临Harvic的博客", 10,100, paint);
+
+        //绘图样式设置为描边
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawText("欢迎光临Harvic的博客", 10,200, paint);
+
+        //绘图样式设置为填充且描边
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        canvas.drawText("欢迎光临Harvic的博客", 10,300, paint);
+
+        示例二：文字样式设置及倾斜度正度区别
+
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setTextSize(80);//设置文字大小
+        paint.setStyle(Paint.Style.FILL);//绘图样式，设置为填充
+
+        //样式设置
+        paint.setFakeBoldText(true);//设置是否为粗体文字
+        paint.setUnderlineText(true);//设置下划线
+        paint.setStrikeThruText(true);//设置带有删除线效果
+
+        //设置字体水平倾斜度，普通斜体字是-0.25，可见往右斜
+        paint.setTextSkewX((float) -0.25);
+        canvas.drawText("欢迎光临Harvic的博客", 10,100, paint);
+
+        //水平倾斜度设置为：0.25，往左斜
+        paint.setTextSkewX((float) 0.25);
+        canvas.drawText("欢迎光临Harvic的博客", 10,200, paint);
+
+        示例三：水平拉伸设置(paint.setTextScale(2))
+        写三行字，第一行，水平未拉伸的字体，第二行，水平拉伸两倍的字体；第三行，水平未拉伸和水平拉伸两部分的字体写在一起，
+        可以发现，仅是水平方向拉伸，高度并未改变；
+
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setTextSize(80);//设置文字大小
+        paint.setStyle(Paint.Style.FILL);//绘图样式，设置为填充
+
+        //变通样式字体
+        canvas.drawText("欢迎光临Harvic的博客", 10,100, paint);
+
+        //水平方向拉伸两倍
+        paint.setTextScaleX(2);//只会将水平方向拉伸，高度不会变
+        canvas.drawText("欢迎光临Harvic的博客", 10,200, paint);
+
+        //写在同一位置,不同颜色,看下高度是否看的不变
+        paint.setTextScaleX(1);//先还原拉伸效果
+        canvas.drawText("欢迎光临Harvic的博客", 10,300, paint);
+
+        paint.setColor(Color.GREEN);
+        paint.setTextScaleX(2);//重新设置拉伸效果
+        canvas.drawText("欢迎光临Harvic的博客", 10,300, paint);
+
+        2、canvas绘图方式
+        (1)、普通水平绘制
+        构造函数：
+        void drawText(String text,float x,float y,Paint paint)
+        void drawText(CharSequence text,int start,int end,float x,float y,Paint paint)
+        void drawText(String text,int start,int end,float x,float y,Paint paint)
+        void drawText(char[] text,int index,int count,float x,float y,Paint paint)
+
+        说明：
+        第一个构造函数：最普通简单的构造函数；
+        第三、四个构造函数；实现截取一部分字体给图；
+        第二个构造函数；最强大，因为传入的可以是charSequence类型字体，所以可以实现绘制带图片的扩展文字(待续)，而且还能截取
+        一部分绘制
+
+        这几个函数就不再多说了，很简单，前面我们也一直在用第一个构造函数，文字截取一般用不到，我也不多说了，浪费时间，可能大家
+        看到有个构造函数中，可以传入charSequence类型的字符串，charSequence是可以利用spannableString来构造有图片的字符串的，
+        那这里是不是可以画出带有图片的字符串来呢，我想过了，实际证明，canvas画图是不支持Span替换的。所以这里的charSequence跟
+        普通的String 没有任何区别的。
+
+        (2)、指定各个文字位置
+
+        void drawPosText(char []text,int index,int count,float[] pos,Paint paint)
+        void drawPosText(String text,float[] pos,Paint paint)
+
+        说明：
+        第一个构造函数：实现截取一部分文字绘制；
+
+        参数说明：
+        char[] text:要绘制的文字数组
+        int index：第一个要绘制的文字的索引
+        int count: 第要绘制的文字个数，用来算最后一个文字的位置，从第一个绘制的文字开始算起
+        float[] pos:每个字体的位置，同样两两一组，如{x1,y1,x2,y2x3,y3.....}
+
+
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setTextSize(80);//设置文字大小
+        paint.setStyle(Paint.Style.FILL);//绘图样式，设置为填充
+
+        float []pos=new float[]{80,100,
+        						80,200,
+        						80,300,
+        						80,400};
+        canvas.drawPosText("画图示例", pos, paint);//两个构造函数
+
+        (3).沿路径绘制
+        void drawTextOnPath(String text,Path path,float hOffset,Paint paint)
+        void drawTextOnPath(char[] text,int index,int count,Path path,float hOffset,float vOffset,Paint paint)
+
+        参数说明：
+        有关截取部分字体绘制相关参数(int index),没难度，就不再讲了，下面首重将hSffset ，vOffset
+        float hOffset ；与路径起始点的水平偏移距离
+        float vOffset : 与路径中心的垂直偏移量
+
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setTextSize(45);//设置文字大小
+        paint.setStyle(Paint.Style.STROKE);//绘图样式，设置为填充
+
+        String string="风萧萧兮易水寒，壮士一去兮不复返";
+
+        //先创建两个相同的圆形路径，并先画出两个路径原图
+        Path circlePath=new Path();
+        circlePath.addCircle(220,200, 180, Path.Direction.CCW);//逆向绘制,还记得吗,上篇讲过的
+        canvas.drawPath(circlePath, paint);//绘制出路径原形
+
+        Path circlePath2=new Path();
+        circlePath2.addCircle(750,200, 180, Path.Direction.CCW);
+        canvas.drawPath(circlePath2, paint);//绘制出路径原形
+
+        paint.setColor(Color.GREEN);
+        //hoffset、voffset参数值全部设为0，看原始状态是怎样的
+        canvas.drawTextOnPath(string, circlePath, 0, 0, paint);
+        //第二个路径，改变hoffset、voffset参数值
+        canvas.drawTextOnPath(string, circlePath2, 80, 30, paint);
+
+        3、字体样式设置(Typeface)
+
+        paint.setTypeface(typeface)
+
+        Typeface相关
+        概述：Typeface是专门用来设置字体样式的，通过paint.setTypeface()来指定。可以指定系统中的字体样式，也可以指定自定义的
+        样式文件中获取。要构建Typeface时，可以指定所用样式的正常体。斜体、粗体等，如果指定样式中，没有相关文字的样式就会用系统
+        默认的样式来显示，一般默认是宋体。
+
+        创建Typeface:
+
+        Typeface create(String familyName,int Style) //直接通过指定字体名字来加载系统中自带的文字样式
+        Typeface create(Typeface family,int Style)   //通过其他Typeface变量来构建文字样式
+        Typeface createFromAsset (AssetManger mgr,String path)  //通过从Asset中获取外部字体来显示字体样式
+        Typeface createFromFile(String path) //从外部路径来创建字体样式
+        Typeface createFromFile(File path) //从外部路径创建字体样式
+        Typeface defaultFromStyle(int style) //创建默认字体
+
+        上面的各个参数都会用到Style变量，Style的枚举值如下：
+
+        Typeface.NORMAL //正常体
+        Typeface.BOLD  //粗体
+        Typeface.ITALIC //斜体
+        Typeface.BOLD_ITALIC //粗斜体
+
+        (1)、使用系统中的字体
+        从上面创建Typeface的所有函数中可知，使用系统中自带的字体有下面两种方式来构造Typeface：
+        Typeface defaultFromStyle(int style) //创建默认字体
+        Typeface create(String familyName，int style)  //直接通过指定字体名来加载系统中自带的文字样式
+
+        其实，第一个仅仅是还是用系统默认的样式来绘制字体，基本没有可指定性，就不在讲了，使用起来难度也不大，下面只以第二个构造函数为例，
+        指定宋体绘制：
+
+        //使用系统自带字体绘制
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setTextSize(60);//设置文字大小
+        paint.setStyle(Paint.Style.STROKE);//绘图样式，设置为填充
+
+        String familyName = "宋体";
+        Typeface font = Typeface.create(familyName,Typeface.NORMAL);
+        paint.setTypeface(font);
+        canvas.drawText("欢迎光临Harvic的博客",10,100, paint);
+
+        2、自定义字体
+        自定义字体的话，我们就需要从外部字体文件加载我们所需要的字形的，从外部文件加载字形所使用的Typrface构造函数如下面三个：
+        Typeface createFromAsset(AssetManager mgr,String path)  //通过从Asset中获取外部字体来显示字体样式
+        Typeface createFromFile(String path) //直接从路径创建
+        Typeface createFromFile(File path)  //从外部路径来创建字体样式
+
+        后面两个路径加载难度不大，而我们一般也不会用到，这里我们说说Aseet文件加载
+
+        首先在Asset下建一个文件夹，命名为Fonts，然后将字体文件jian_luobo.ttf放入其中
+
+        //自定义字体，，，迷你简罗卜
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);  //设置画笔颜色
+
+        paint.setStrokeWidth (5);//设置画笔宽度
+        paint.setAntiAlias(true); //指定是否使用抗锯齿功能，如果使用，会使绘图速度变慢
+        paint.setTextSize(60);//设置文字大小
+        paint.setStyle(Paint.Style.FILL);//绘图样式，设置为填充
+
+        AssetManager mgr=m_context.getAssets();//得到AssetManager
+        Typeface typeface=Typeface.createFromAsset(mgr, "fonts/jian_luobo.ttf");//根据路径得到Typeface
+        paint.setTypeface(typeface);
+        Log.v("msg",typeface.toString());
+        canvas.drawText("欢迎光临Harvic的博客",10,100, paint);//两个构造函数
+
+
+
+
+
