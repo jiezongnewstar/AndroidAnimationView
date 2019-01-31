@@ -1,4 +1,4 @@
-package com.xibei.personaldesign.itemDemoHelper;
+package com.xibei.personaldesign.itemDemoHelper.viewHelper;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,16 +7,16 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class OndrawView1 extends View {
-    public OndrawView1(Context context) {
+public class OndrawCircleView extends View {
+    public OndrawCircleView(Context context) {
         super(context);
     }
 
-    public OndrawView1(Context context, AttributeSet attrs) {
+    public OndrawCircleView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public OndrawView1(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OndrawCircleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

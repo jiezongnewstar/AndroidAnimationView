@@ -1,11 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<ScrollView     xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.xibei.personaldesign.itemDemoHelper.OndrawView1
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="往下滑会有惊喜哦"/>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="画个圆"/>
+
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawCircleView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="画条线"/>
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawLineView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="画几条线"/>
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawLinesView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="画个点"/>
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawPointView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="画几个点"/>
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawPointsView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="画几个矩形"/>
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawRectView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="画个圆角矩形"/>
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawRoundRectView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="画个椭圆"/>
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawOvalView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="画个弧"/>
+
+    <com.xibei.personaldesign.itemDemoHelper.viewHelper.OndrawArcView
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 
 </LinearLayout>
+
+</ScrollView>
