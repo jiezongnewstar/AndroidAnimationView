@@ -1,5 +1,4 @@
 ### 动画（animation、animator）-- 自定义控件(Ondraw,OnMesure,Onlayout) -- 以及实战（最后策划）
-* 由于春节临近，要回家了，出来又一年了，这段时间可能会有所更新，也有可能没有更新。为期20天的假期，玩就好好玩，工作就好好工作，一起展望2019，祝大家猪事大吉！
 
 <p align="center">
     <img src="https://github.com/jiezongnewstar/AnimationViewandWedgit/blob/master/app/src/main/res/screen1.gif">
