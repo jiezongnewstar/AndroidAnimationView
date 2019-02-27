@@ -27,6 +27,7 @@ import com.xibei.personaldesign.itemDemo.ActivityAnimation8;
 import com.xibei.personaldesign.itemDemo.ActivityAnimation9;
 import com.xibei.personaldesign.itemDemo.ActivityView1;
 import com.xibei.personaldesign.itemDemo.ActivityView2;
+import com.xibei.personaldesign.itemDemo.ActivityView3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityAnimation15(),"动画 15 ：animateLayoutChanges 与 LayoutTransition");
         addData(new ActivityAnimation16(),"动画 16 ：listView item 进入退出动画");
         addData(new ActivityView1(),"ondraw 1：概述及基本几何图形绘制");
-        addData(new ActivityView2(),"ondraw 2：路径及文字");
+        addData(new ActivityView2(),"ondraw 2：路径");
+        addData(new ActivityView3(),"ondraw 3：文字");
     }
 
 

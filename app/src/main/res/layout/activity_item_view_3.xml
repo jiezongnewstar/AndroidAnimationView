@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1、绘图样式"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.textHelper.TextView1
+                android:layout_width="800dp"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2 、字体样式和斜度"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.textHelper.TextView2
+                android:layout_width="800dp"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3、水平拉伸"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.textHelper.TextView3
+                android:layout_width="800dp"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4、指定每个文字的位置"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.textHelper.TextView4
+                android:layout_width="800dp"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6、文字延路径"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.textHelper.TextView5
+                android:layout_width="800dp"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6、自定义字体"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.textHelper.TextView6
+                android:layout_width="800dp"
+                android:layout_height="200dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
