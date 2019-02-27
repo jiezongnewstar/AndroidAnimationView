@@ -5,8 +5,106 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp"
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1、直线路径"
+                android:textColor="@android:color/black" />
 
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.LinePathView
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2、矩形路径"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.RectPathView
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3、文字在路径上"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.TextOnPathView
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4、圆角矩形路径"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.RoundRectPathView
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5、圆形路径"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.RoundPathView
+                android:layout_width="200dp"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6、椭圆路径"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.OvalPathView
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7、弧形路径"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.ArcPathView
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+
+            <TextView
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8、线段路径"
+                android:textColor="@android:color/black" />
+
+            <com.xibei.personaldesign.itemDemoHelper.pathHelper.QuadToPathView
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
