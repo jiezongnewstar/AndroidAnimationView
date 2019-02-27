@@ -1,4 +1,4 @@
-### 动画（animation、animator）-- 自定义控件(Ondraw,OnMesure,Onlayout) -- 以及实战（最后策划）
+### 动画（animation、animator）-- 自定义控件(Ondraw,OnMesure,Onlayout) -- 以及实战（最后策划）[Ps莫在意代码习惯是否好坏，因为时间有限，主要是分享给大家具体怎么操作]
 
  <h4><a href = "https://github.com/jiezongnewstar/AndroidAnimationView/blob/master/app/release/app-release.apk?raw=true" >点我下载示例APK</a></h4>
  <h3>源码目录索引</h3>
