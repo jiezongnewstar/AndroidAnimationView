@@ -1,4 +1,6 @@
 ### 动画（animation、animator）-- 自定义控件(Ondraw,OnMesure,Onlayout) -- 以及实战（最后策划）
+
+ <h4><a href = "">点我下载示例APK</a></h4>
  <h3>源码目录索引</h3>
         <p><a href = "https://github.com/jiezongnewstar/AndroidAnimationView/blob/master/app/src/main/java/com/xibei/personaldesign/itemDemo/ActivityAnimation1.java">
          动画 1 : scale、rotate、translate、alpha、set</a></p>
