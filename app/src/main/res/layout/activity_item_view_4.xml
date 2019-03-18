@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.xibei.personaldesign.itemDemo.RangeView
+        android:layout_centerHorizontal="true"
+        android:id="@+id/rangerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/btn_01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="恢复" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="Region 的 set 用法："/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+
+            <Button
+                android:id="@+id/btn_02"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="empty"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_03"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="region"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_04"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="rect"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_05"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="l,t,r,b"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_06"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="path &amp;region"
+                android:textSize="8sp"/>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="RegionIterator类 用法："/>
+
+
+            <Button
+                android:id="@+id/btn_07"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RegionIterator"
+                android:textSize="8sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="区域的合并、交叉等操作："/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+
+            <Button
+                android:id="@+id/btn_08"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="DIFFERENCE"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_09"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="INTERSECT"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_10"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="UNION"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_11"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="XOR"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_12"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="REVERSE_DIFFERENCE"
+                android:textSize="8sp"/>
+
+            <Button
+                android:id="@+id/btn_13"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="REPLACE"
+                android:textSize="8sp"/>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+</RelativeLayout>

@@ -28,6 +28,7 @@ import com.xibei.personaldesign.itemDemo.ActivityAnimation9;
 import com.xibei.personaldesign.itemDemo.ActivityView1;
 import com.xibei.personaldesign.itemDemo.ActivityView2;
 import com.xibei.personaldesign.itemDemo.ActivityView3;
+import com.xibei.personaldesign.itemDemo.ActivityView4;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityView1(),"ondraw 1：概述及基本几何图形绘制");
         addData(new ActivityView2(),"ondraw 2：路径");
         addData(new ActivityView3(),"ondraw 3：文字");
+        addData(new ActivityView4(),"ondraw 4：区域(Range)");
     }
 
 

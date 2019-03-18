@@ -68,6 +68,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".itemDemo.ActivityView3"
             android:screenOrientation="portrait" />
+        <activity android:name=".itemDemo.ActivityView4"
+        android:screenOrientation="portrait" />
 
 
     </application>

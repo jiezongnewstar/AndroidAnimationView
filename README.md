@@ -40,6 +40,8 @@
         ondraw 2：路径</a></p>
         <p><a href = "https://github.com/jiezongnewstar/AndroidAnimationView/blob/master/app/src/main/java/com/xibei/personaldesign/itemDemo/ActivityView3.java">
         ondraw 3：文字</a></p>
+        <p><a href = "https://github.com/jiezongnewstar/AndroidAnimationView/blob/master/app/src/main/java/com/xibei/personaldesign/itemDemo/ActivityView4.java">
+                ondraw 3：区域（Range）</a></p>
 
 
 <p align="center">
