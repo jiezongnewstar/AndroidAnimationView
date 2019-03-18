@@ -4,7 +4,7 @@ import android.animation.TypeEvaluator;
 
 import java.util.IllegalFormatCodePointException;
 
-public class MyEvaluator implements TypeEvaluator<Integer> {
+public class   MyEvaluator implements TypeEvaluator<Integer> {
 
     private int MODE;
 
