@@ -1,4 +1,4 @@
-package com.xibei.personaldesign.itemDemo;
+package com.xibei.personaldesign.itemDemoHelper;
 
 import android.content.Context;
 import android.graphics.Canvas;

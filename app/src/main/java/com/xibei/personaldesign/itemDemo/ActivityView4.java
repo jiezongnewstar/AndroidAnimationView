@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.xibei.personaldesign.R;
+import com.xibei.personaldesign.itemDemoHelper.RangeView;
 
 public class ActivityView4 extends Activity implements View.OnClickListener {
 
