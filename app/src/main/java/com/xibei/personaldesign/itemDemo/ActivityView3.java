@@ -5,6 +5,11 @@ import android.os.Bundle;
 
 import com.xibei.personaldesign.R;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * //普通设置
  * paint.setStrokeWidth (5);//设置画笔宽度
@@ -29,6 +34,9 @@ public class ActivityView3 extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_view_3);
+
+        Executor e  = Executors.newCachedThreadPool();
+
     }
 
 

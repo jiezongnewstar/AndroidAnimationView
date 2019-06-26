@@ -3,7 +3,7 @@ package com.xibei.personaldesign.itemDemo;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.View;

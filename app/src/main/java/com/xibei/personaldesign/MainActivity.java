@@ -1,9 +1,9 @@
 package com.xibei.personaldesign;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -29,11 +29,13 @@ import com.xibei.personaldesign.itemDemo.ActivityView1;
 import com.xibei.personaldesign.itemDemo.ActivityView2;
 import com.xibei.personaldesign.itemDemo.ActivityView3;
 import com.xibei.personaldesign.itemDemo.ActivityView4;
+import com.xibei.personaldesign.itemDemo.CardViewActivity;
+import com.xibei.personaldesign.itemDemo.PaintApiActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     ListView lv_title;
     List<ItemBean> beans;
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         addData(new ActivityView2(),"ondraw 2：路径");
         addData(new ActivityView3(),"ondraw 3：文字");
         addData(new ActivityView4(),"ondraw 4：区域(Range)");
+        addData(new PaintApiActivity(),"Paint常用API，滤镜");
+        addData(new CardViewActivity(),"CardView适配");
     }
 
 
@@ -93,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
         bean.activity = activity;
         bean.title = title;
         beans.add(bean);
+
+
     }
 
 
